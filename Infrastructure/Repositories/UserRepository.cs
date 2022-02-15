@@ -1,5 +1,7 @@
 ﻿using Domain.Entities;
 using Infrastructure.Clients;
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization.IdGenerators;
 using MongoDB.Driver;
 
 namespace Infrastructure.Repositories;
@@ -20,6 +22,13 @@ public class UserRepository
     public void CreateUser(User user)
     {
         _collection.InsertOne(user);
+    }
+
+    public void DeleteUser(string userId)
+    {
+        var deleteFilter = Builders<User>.Filter.Eq("_id", ObjectId.Parse(userId));
+        _collection.DeleteOne(deleteFilter);
+
     }
 
 }

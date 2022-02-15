@@ -17,4 +17,9 @@ public class JeebkaService
         _userRepository.CreateUser(user);
     }
     
+    public void DeleteUser(string userId)
+    {
+        _userRepository.DeleteUser(userId);
+    }
+    
 }
