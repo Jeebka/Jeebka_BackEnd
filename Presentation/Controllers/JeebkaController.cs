@@ -15,4 +15,10 @@ public class JeebkaController : ControllerBase
         _jeebkaService = jeebkaService;
     }
     
+    [HttpPost("users")]
+    public void CreateUser(User user)
+    {
+        _jeebkaService.CreateUser(user);
+    }
+    
 }

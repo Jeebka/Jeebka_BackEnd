@@ -12,4 +12,9 @@ public class JeebkaService
         _userRepository = userRepository;
     }
     
+    public void CreateUser(User user)
+    {
+        _userRepository.CreateUser(user);
+    }
+    
 }

@@ -16,4 +16,10 @@ public class UserRepository
         _database = _mongoClient.GetDatabase("JebkaDB");
         _collection = _database.GetCollection<User>("User");
     }
+    
+    public void CreateUser(User user)
+    {
+        _collection.InsertOne(user);
+    }
+
 }
