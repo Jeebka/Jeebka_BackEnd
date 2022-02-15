@@ -21,4 +21,10 @@ public class JeebkaController : ControllerBase
         _jeebkaService.CreateUser(user);
     }
     
+    [HttpDelete("users/{userid}")]
+    public void DeleteUser(string userid)
+    {
+        _jeebkaService.DeleteUser(userid);
+    }
+    
 }

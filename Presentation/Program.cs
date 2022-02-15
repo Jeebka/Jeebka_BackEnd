@@ -2,14 +2,20 @@ using Business.Services;
 using Infrastructure.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
+Environment.SetEnvironmentVariable("MongoConnection", "mongodb+srv://dbUser:dbUserPassword@jeebkadb.6qdxo.mongodb.net/JeebkaDB?retryWrites=true&w=majority");
 
-Environment.SetEnvironmentVariable("MongoConnection", "mongodb+srv://dbUser:dbUserPassword@jebkadb.ceyox.mongodb.net/JebkaDB?retryWrites=true&w=majority");
+Environment.SetEnvironmentVariable("DataBase", "JeebkaDB");
+Environment.SetEnvironmentVariable("UserRepositoryCollectionName", "User");
+
+
 
 // Add services to the container.
 
 builder.Services.AddControllers();
 builder.Services.AddSingleton<UserRepository>(
-    new UserRepository(Environment.GetEnvironmentVariable("MongoConnection")));
+    new UserRepository(Environment.GetEnvironmentVariable("MongoConnection"),
+        Environment.GetEnvironmentVariable("DataBase"),
+        Environment.GetEnvironmentVariable("UserRepositoryCollectionName")));
 builder.Services.AddSingleton<JeebkaService>();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
