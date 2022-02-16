@@ -24,11 +24,17 @@ public class UserRepository
         _collection.InsertOne(user);
     }
 
-    public void DeleteUser(string userId)
+    public User? GetUser(string email)
     {
-        var deleteFilter = Builders<User>.Filter.Eq("_id", ObjectId.Parse(userId));
-        _collection.DeleteOne(deleteFilter);
+        var findByEmailFilter = Builders<User>.Filter.Eq("email", email);
+        var response = _collection.FindSync(findByEmailFilter);
+        return (response != null && response.Current.Any()) ? response.Current.First() : null;
+    }
 
+    public void DeleteUser(string email)
+    {
+        var deleteFilter = Builders<User>.Filter.Eq("email", email);
+        _collection.DeleteOne(deleteFilter);
     }
 
 }

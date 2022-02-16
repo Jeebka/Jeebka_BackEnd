@@ -2,11 +2,10 @@ using Business.Services;
 using Infrastructure.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
-Environment.SetEnvironmentVariable("MongoConnection", "mongodb+srv://dbUser:dbUserPassword@jeebkadb.6qdxo.mongodb.net/JeebkaDB?retryWrites=true&w=majority");
 
+Environment.SetEnvironmentVariable("MongoConnection", "mongodb+srv://dbUser:dbUserPassword@jeebkadb.6qdxo.mongodb.net/JeebkaDB?retryWrites=true&w=majority");
 Environment.SetEnvironmentVariable("DataBase", "JeebkaDB");
 Environment.SetEnvironmentVariable("UserRepositoryCollectionName", "User");
-
 
 
 // Add services to the container.
