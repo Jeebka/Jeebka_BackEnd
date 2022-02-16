@@ -2,6 +2,14 @@ using Business.Services;
 using Infrastructure.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
+<<<<<<< Updated upstream
+=======
+
+Environment.SetEnvironmentVariable("MongoConnection", "mongodb+srv://dbUser:dbUserPassword@jeebkadb.6qdxo.mongodb.net/JeebkaDB?retryWrites=true&w=majority");
+Environment.SetEnvironmentVariable("DataBase", "JeebkaDB");
+Environment.SetEnvironmentVariable("UserRepositoryCollectionName", "User");
+
+>>>>>>> Stashed changes
 
 Environment.SetEnvironmentVariable("MongoConnection", "mongodb+srv://dbUser:dbUserPassword@jebkadb.ceyox.mongodb.net/JebkaDB?retryWrites=true&w=majority");
 

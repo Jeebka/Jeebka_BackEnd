@@ -1,5 +1,6 @@
 ﻿using Domain.Entities;
 using Infrastructure.Repositories;
+using MongoDB.Driver;
 
 namespace Business.Services;
 
@@ -16,10 +17,15 @@ public class JeebkaService
     {
         _userRepository.CreateUser(user);
     }
-    
-    public void DeleteUser(string userId)
+
+    public User? GetUserByEmail(string email)
     {
-        _userRepository.DeleteUser(userId);
+        return _userRepository.GetUser(email);
+    }
+    
+    public void DeleteUserByEmail(string email)
+    {
+        _userRepository.DeleteUser(email);
     }
     
 }
