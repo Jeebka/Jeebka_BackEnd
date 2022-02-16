@@ -15,7 +15,7 @@ public class UserRepository
     public UserRepository(string urlConnection)
     {
         _mongoClient = MongoDBClient.GetConnection(urlConnection);
-        _database = _mongoClient.GetDatabase("JebkaDB");
+        _database = _mongoClient.GetDatabase("JeebkaDB");
         _collection = _database.GetCollection<User>("User");
     }
     
