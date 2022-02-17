@@ -37,5 +37,26 @@ public class JeebkaController : ControllerBase
         _jeebkaService.DeleteUserByEmail(userid);
         return Ok();
     }
-    
+
+    [HttpPost("links")]
+    public IActionResult CreateLink(Link link)
+    {
+        _jeebkaService.CreateLink(link);
+        return Created("~/v1/jeebka/links/"+link.Id, link);
+    }
+
+    [HttpPut("links/group")]
+    public IActionResult AddLinkToGroup(String linkId, String groupId)
+    {
+        _jeebkaService.AddLinkToGroup( linkId, groupId);
+        return Ok();
+    }
+
+    public IActionResult GetLink(string linkId)
+    {
+        var link = _jeebkaService.GetLink(linkId);
+        if (link == null) return NotFound();
+        return Ok(linkId);
+    }
+
 }

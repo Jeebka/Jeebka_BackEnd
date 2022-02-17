@@ -1,18 +1,24 @@
 ﻿using Domain.Entities;
+using Infrastructure.Clients;
+using MongoDB.Bson;
 using MongoDB.Driver;
 
 namespace Infrastructure.Repositories;
 
-public class GroupRepository : IDisposable
+public class GroupRepository
 {
-    private IMongoCollection<Group> _collection; 
-    public GroupRepository(string urlConnection){}
+    private readonly MongoClient _mongoClient;
+    private IMongoDatabase _database;
+    private IMongoCollection<Group> _collection;
+    private LinkRepository _linkRepository;
 
-    public Group GetGroup(string groupId)
+    public GroupRepository(LinkRepository linkRepository, IMongoCollection<Group> groupsCollection)
     {
-        return new Group();
+        _linkRepository = linkRepository;
+        _collection = groupsCollection;
     }
-
+    
+    
     public void AddLinkToGroup(string groupId, string linkId)
     {
         var findByIdFilter = Builders<Group>.Filter.Eq("Id",groupId);
@@ -20,14 +26,8 @@ public class GroupRepository : IDisposable
         _collection.UpdateOne(findByIdFilter, addLinkUpdate);
     }
     
-    public void DeleteLinkFromGroup(string groupId, string linkId)
-    {
-        var findByIdFilter = Builders<Group>.Filter.Eq("Id",groupId);
-        var deleteLinkUpdate = Builders<Group>.Update.Pull("Links", linkId);
-        _collection.UpdateOne(findByIdFilter, deleteLinkUpdate);
+    
     }
-
-    public void Dispose()
-    {
-    }
+    
+    
 }

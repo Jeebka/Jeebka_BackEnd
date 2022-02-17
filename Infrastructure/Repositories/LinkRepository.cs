@@ -1,23 +1,19 @@
 ﻿using Domain.Entities;
 using Infrastructure.Clients;
 using MongoDB.Bson;
+using MongoDB.Bson.Serialization.IdGenerators;
 using MongoDB.Driver;
 
 namespace Infrastructure.Repositories;
 
 public class LinkRepository
 {
-    private readonly string _urlConnection;
-    private readonly MongoClient _mongoClient;
-    private IMongoDatabase _database;
+    
     private IMongoCollection<Link> _collection;
 
-    public LinkRepository(string urlConnection)
+    public LinkRepository(IMongoCollection<Link> linksCollection)
     {
-        _urlConnection = urlConnection;
-        _mongoClient = MongoDBClient.GetConnection(urlConnection);
-        _database = _mongoClient.GetDatabase("JeebkaDB");
-        _collection = _database.GetCollection<Link>("Link");
+        _collection = linksCollection;
     }
 
     public async Task<List<Link>> GetLinks()
@@ -25,43 +21,29 @@ public class LinkRepository
         return await _collection.Find(_ => true).ToListAsync();
     }
 
+    public void CreateLink(Link link, out string linkId)
+    {
+        link.Id = ObjectId.GenerateNewId().ToString();
+        linkId = link.Id;
+        _collection.InsertOne(link);
+    }
+    
     public void CreateLink(Link link)
     {
         link.Id = ObjectId.GenerateNewId().ToString();
         _collection.InsertOne(link);
     }
 
-    public void AddLinkToGroup(string linkId, string groupId)
-    {
-        using var groupRepo = new GroupRepository(_urlConnection);
-        groupRepo.AddLinkToGroup(groupId, linkId);
-    }
-
-    public async Task DeleteLink(string linkId)
-    {
-        using var groupRepo = new GroupRepository(_urlConnection);
-        var findByIdFilter = Builders<Link>.Filter.Eq("id", linkId);
-        var link = GetLink(linkId);
-        if (link != null)
-        {
-            foreach (var groupId in link.Groups)
-            {
-                groupRepo.DeleteLinkFromGroup(groupId, linkId);
-            }
-            await _collection.DeleteOneAsync(findByIdFilter);
-        }
-    }
-
     public Link? GetLink(string linkId)
     {
-        var findByIdFilter = Builders<Link>.Filter.Eq("id", linkId);
-        var response = _collection.FindSync(findByIdFilter);
-        return (response != null && response.Current.Any()) ? response.Current.First() : null;
+        var findByIdFilter = Builders<Link>.Filter.Eq("Id", linkId);
+        return _collection.Find(findByIdFilter).First();
     }
-
-    public async Task DeleteLinkFromGroup(string linkId, string groupId)
+    
+    public void AddLinkToGroup(string groupId, string linkId)
     {
-        using var groupRepo = new GroupRepository(_urlConnection);
-        groupRepo.DeleteLinkFromGroup(groupId, linkId);
+        var findByIdFilter = Builders<Link>.Filter.Eq("Id",linkId);
+        var addLinkUpdate = Builders<Link>.Update.Push("Groups", groupId);
+        _collection.UpdateOne(findByIdFilter, addLinkUpdate);
     }
 }
