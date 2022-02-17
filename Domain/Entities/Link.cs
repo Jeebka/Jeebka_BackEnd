@@ -7,7 +7,7 @@ public class Link
 {
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]
-    private string Id { get; set; }
+    public string Id { get; set; }
     
     [BsonElement("url")]
     public string Url { get; set; }
@@ -24,21 +24,5 @@ public class Link
     
     [BsonElement("tags")]
     public IEnumerable<string> Tags { get; set; }
-
-    public string getId()
-    {
-        return Id;
-    }
-
-    public void addGroup(String group)
-    {
-        if (!Groups.Contains(group))
-        {
-            Groups.Add(group);
-        }
-        else
-        {
-            throw new Exception("Group has alreade been added");
-        }
-    }
+    
 }

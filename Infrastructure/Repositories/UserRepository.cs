@@ -12,11 +12,9 @@ public class UserRepository
     private IMongoDatabase _database;
     private IMongoCollection<User> _collection;
 
-    public UserRepository(string urlConnection)
+    public UserRepository(IMongoCollection<User> userCollection)
     {
-        _mongoClient = MongoDBClient.GetConnection(urlConnection);
-        _database = _mongoClient.GetDatabase("JeebkaDB");
-        _collection = _database.GetCollection<User>("User");
+        _collection = userCollection;
     }
     
     public void CreateUser(User user)
@@ -24,11 +22,24 @@ public class UserRepository
         _collection.InsertOne(user);
     }
 
-    public void DeleteUser(string userId)
+    public User? GetUser(string email)
     {
-        var deleteFilter = Builders<User>.Filter.Eq("_id", ObjectId.Parse(userId));
-        _collection.DeleteOne(deleteFilter);
+        var findByEmailFilter = Builders<User>.Filter.Eq("email", email);
+        var response = _collection.FindSync(findByEmailFilter);
+        return (response != null && response.Current.Any()) ? response.Current.First() : null;
+    }
 
+    public void DeleteUser(string email)
+    {
+        var deleteFilter = Builders<User>.Filter.Eq("email", email);
+        _collection.DeleteOne(deleteFilter);
+    }
+    
+    public void AddGroupToUserGroups(string userEmail, string groupId)
+    {
+        var findByEmailFilter = Builders<User>.Filter.Eq("email", userEmail);
+        var addLinkUpdate = Builders<User>.Update.Push("groups", groupId);
+        _collection.UpdateOne(findByEmailFilter, addLinkUpdate);
     }
 
 }

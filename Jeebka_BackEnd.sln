@@ -8,6 +8,15 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "Domain\Domain.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure", "Infrastructure\Infrastructure.csproj", "{D7469148-FEC7-4FD7-B108-3AEBE586692F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test", "Test\Test.csproj", "{42A5F304-1E8F-4502-9352-1FFF7E1B5C6B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Runner", "Runner\Runner.csproj", "{EF58E866-9C13-479A-BBF7-AFB36CF4414F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Jeebka", "Jeebka", "{7AF428B4-E63E-40DD-A339-9717EEDFB414}"
+	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +39,13 @@ Global
 		{D7469148-FEC7-4FD7-B108-3AEBE586692F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D7469148-FEC7-4FD7-B108-3AEBE586692F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D7469148-FEC7-4FD7-B108-3AEBE586692F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{42A5F304-1E8F-4502-9352-1FFF7E1B5C6B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{42A5F304-1E8F-4502-9352-1FFF7E1B5C6B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{42A5F304-1E8F-4502-9352-1FFF7E1B5C6B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{42A5F304-1E8F-4502-9352-1FFF7E1B5C6B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EF58E866-9C13-479A-BBF7-AFB36CF4414F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EF58E866-9C13-479A-BBF7-AFB36CF4414F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EF58E866-9C13-479A-BBF7-AFB36CF4414F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EF58E866-9C13-479A-BBF7-AFB36CF4414F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
