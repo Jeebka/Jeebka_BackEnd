@@ -37,19 +37,41 @@ public class JeebkaService
         return _linkRepository.GetLink(linkId);
     }
 
-    public void CreateLink(Link link, out string linkId)
+    public bool CreateLink(Link link, string userEmail, string groupName)
     {
-        _linkRepository.CreateLink(link, out linkId);
+        var group = _groupRepository.GetGroup(userEmail, groupName);
+        var notExists = _linkRepository.ValidateLinkInGroup(link.Name, link.Url, group.Id);
+        if (notExists)
+        {
+            _linkRepository.CreateLink(link, out var linkId);
+            _groupRepository.AddLinkToGroup(group.Id, linkId);
+            _linkRepository.AddGroupToLink(group.Id, linkId);
+        }
+        return notExists;
     }
-    public void CreateLink(Link link)
+    public Link? GetLinkByName(string userEmail, string groupName, string linkName)
     {
-        _linkRepository.CreateLink(link);
+        var group = _groupRepository.GetGroup(userEmail, groupName);
+        return _linkRepository.GetLinkByName(linkName, group.Id);
     }
 
-    public void AddLinkToGroup(string linkId, string groupId)
+    public Link? GetLinkByUrl(string userEmail, string groupName, string linkUrl)
     {
-        _groupRepository.AddLinkToGroup(groupId, linkId);
-        _linkRepository.AddLinkToGroup(groupId, linkId);
+        var group = _groupRepository.GetGroup(userEmail, groupName);
+        return _linkRepository.GetLinkByUrl(linkUrl, group.Id);
+    }
+
+    public bool AddLinkToGroup(string userEmail, string groupName, string linkId)
+    {
+        var group = _groupRepository.GetGroup(userEmail, groupName);
+        var notExists = group.Links.Contains(linkId);
+        if (notExists)
+        {
+            _groupRepository.AddLinkToGroup(group.Id, linkId);
+            _linkRepository.AddGroupToLink(group.Id, linkId);
+        }
+
+        return notExists;
     }
     
 }

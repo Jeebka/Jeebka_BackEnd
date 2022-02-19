@@ -1,4 +1,5 @@
 ﻿using Business.Services;
+using Domain.DTOs;
 using Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 
@@ -38,25 +39,12 @@ public class JeebkaController : ControllerBase
         return Ok();
     }
 
-    [HttpPost("links")]
-    public IActionResult CreateLink(Link link)
+    [HttpPost("users/{email}/groups/{name}/links")]
+    public IActionResult CreateLink(LinkDto link, string email, string name)
     {
-        _jeebkaService.CreateLink(link);
-        return Created("~/v1/jeebka/links/"+link.Id, link);
+        IActionResult response = Created($"users/{email}/groups/{name}/links/{link.Name}", link);
+        if (!_jeebkaService.CreateLink(link, email, name)) response = Conflict();
+        return response;
     }
-
-    [HttpPut("links/group")]
-    public IActionResult AddLinkToGroup(String linkId, String groupId)
-    {
-        _jeebkaService.AddLinkToGroup( linkId, groupId);
-        return Ok();
-    }
-
-    public IActionResult GetLink(string linkId)
-    {
-        var link = _jeebkaService.GetLink(linkId);
-        if (link == null) return NotFound();
-        return Ok(linkId);
-    }
-
+    
 }
