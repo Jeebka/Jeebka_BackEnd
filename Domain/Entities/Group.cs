@@ -1,4 +1,5 @@
-﻿using MongoDB.Bson;
+﻿using Domain.DTOs;
+using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
 namespace Domain.Entities;
@@ -20,4 +21,16 @@ public class Group
     
     [BsonElement("links")]
     public List<string> Links { get; set; }
+    
+    public static implicit operator Group(GroupDto groupDto)
+    {
+        return new Group
+        {
+            Id = ObjectId.GenerateNewId().ToString(),
+            Description = groupDto.Description,
+            Links = new List<string>(),
+            Members = new List<string>(),
+            Name = groupDto.Name
+        };
+    }
 }
