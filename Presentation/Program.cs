@@ -21,7 +21,7 @@ var userCollection = database.GetCollection<User>(Environment.GetEnvironmentVari
 
 builder.Services.AddControllers();
 builder.Services.AddSingleton<UserRepository>(new UserRepository(userCollection));
-builder.Services.AddSingleton<GroupRepository>(new GroupRepository(new LinkRepository(linkCollection), groupCollection));
+builder.Services.AddSingleton<GroupRepository>(new GroupRepository(groupCollection));
 builder.Services.AddSingleton<LinkRepository>(new LinkRepository(linkCollection));
 
 builder.Services.AddSingleton<JeebkaService>();

@@ -8,7 +8,7 @@ public class User
 {
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]
-    private string Id { get; set; }
+    public string Id { get; set; }
     
     [BsonElement("name")]
     public string Name { get; set; }
@@ -20,7 +20,7 @@ public class User
     public string Email { get; set; }
     
     [BsonElement("groups")]
-    private List<string> Groups { get; set; }
+    public List<string> Groups { get; set; }
     
     public static implicit operator User(UserDto userDto)
     {

@@ -70,15 +70,6 @@ public class Tests
         Assert.AreEqual(_jeebkaService.GetUserByEmail(user.Email), null);
     }
 
-    [Test]
-    public void ShouldNotCreateAnUserSameEmail()
-    {
-        var user = CreateGenericUser();
-        Assert.True(_jeebkaService.CreateUser(user));
-        Assert.False(_jeebkaService.CreateUser(user));
-        
-    }
-
     //Groups Tests
 
     [Test]
@@ -102,17 +93,7 @@ public class Tests
         _jeebkaService.CreateGroup(group2, user.Email);
         Assert.AreEqual(_jeebkaService.GetGroup(group2.Name, user.Email).Name, group2.Name);
     }
-    
-    [Test]
-    public void ShouldNotCreateAGroupSameName()
-    {
-        var user = CreateGenericUser();
-        var group = CreateGenericGroup();
-        _jeebkaService.CreateUser(user);
-        Assert.True(_jeebkaService.CreateGroup(group, user.Email));
-        Assert.False(_jeebkaService.CreateGroup(group, user.Email));
-    }
-    
+
     [Test]
     public void ShouldDeleteAGroup()
     {
@@ -138,8 +119,6 @@ public class Tests
         Assert.True(members.Contains(user.Email) && members.Contains(user2.Email));
     }
     
-    //Links Tests
-    
     [Test]
     public void ShouldCreateALink()
     {
@@ -150,36 +129,6 @@ public class Tests
         _jeebkaService.CreateGroup(group, user.Email);
         _jeebkaService.CreateLink(link, user.Email, group.Name);
         Assert.AreEqual(_jeebkaService.GetLinkByName(user.Email, group.Name, link.Name).Url, link.Url);
-    }
-    
-    [Test]
-    public void ShouldNotCreateALinkSameName()
-    {
-        var user = CreateGenericUser();
-        var group = CreateGenericGroup();
-        var link = CreateGenericLink();
-        var link2 = CreateGenericLink(2);
-        link2.Name = "GenericLinkNameTest1";
-        _jeebkaService.CreateUser(user);
-        _jeebkaService.CreateGroup(group, user.Email);
-        Assert.True(_jeebkaService.CreateLink(link, user.Email, group.Name));
-        Assert.False(_jeebkaService.CreateLink(link, user.Email, group.Name));
-        
-    }
-    
-    [Test]
-    public void ShouldNotCreateALinkSameUrl()
-    {
-        var user = CreateGenericUser();
-        var group = CreateGenericGroup();
-        var link = CreateGenericLink();
-        var link2 = CreateGenericLink(2);
-        link2.Url = "https://www.creationLinkTest.tst1.jbk";
-        _jeebkaService.CreateUser(user);
-        _jeebkaService.CreateGroup(group, user.Email);
-        Assert.True(_jeebkaService.CreateLink(link, user.Email, group.Name));
-        Assert.False(_jeebkaService.CreateLink(link, user.Email, group.Name));
-        
     }
 
     [Test]
@@ -212,7 +161,7 @@ public class Tests
         TestContext.Out.WriteLine(JsonConvert.SerializeObject(_jeebkaService.GetLinkByName(user.Email, group.Name, link.Name)));
         Assert.True(_jeebkaService.GetLinkByName(user.Email, group.Name, returnedLink.Name).Tags.Contains("tag1"));
 
-    } 
+    }
 
     [Test]
     public void ShouldNotAddTagToLinkIfAlreadyExists()
@@ -261,11 +210,64 @@ public class Tests
         _jeebkaService.CreateLink(link, user.Email, group.Name); _jeebkaService.CreateLink(link2, user.Email, group.Name);
         _jeebkaService.AddTagToLink(user.Email, group.Name, link.Name,"tag1"); _jeebkaService.AddTagToLink(user.Email, group.Name, link2.Name,"tag1");
         _jeebkaService.AddTagToLink(user.Email, group.Name, link.Name,"tag2");
-        
-        var userLinks = _jeebkaService.GetLinksByTags(new List<string>{group.Name}, new List<string> {"tag1", "tag2"});
-        TestContext.Out.WriteLine(userLinks.Count);
+        var userLinks = _jeebkaService.GetLinksByTags(new List<string>{groupId}, new List<string> {"tag1", "tag2"});
         Assert.True(userLinks.Count == 1);
         Assert.True(userLinks[0].Name == link.Name);
+    }
+    
+    [Test]
+    public void ShouldGetTheUsersLinksByName()
+    {
+        var link = CreateGenericLink();
+        var link2 = CreateGenericLink(2);
+        var group = CreateGenericGroup();
+        var user = CreateGenericUser();
+        _jeebkaService.CreateUser(user);
+        _jeebkaService.CreateGroup(group, user.Email);
+        var groupId = _jeebkaService.GetGroup(group.Name, user.Email).Id;
+        _jeebkaService.CreateLink(link, user.Email, group.Name); _jeebkaService.CreateLink(link2, user.Email, group.Name);
+        _jeebkaService.AddTagToLink(user.Email, group.Name, link.Name,"tag1"); _jeebkaService.AddTagToLink(user.Email, group.Name, link2.Name,"tag1");
+        _jeebkaService.AddTagToLink(user.Email, group.Name, link.Name,"tag2");
+        var userLinks = _jeebkaService.GetLinksByName(new List<string>{groupId}, "LinkName");
+        Assert.True(userLinks.Count == 2);
+    }
+    
+    [Test]
+    public void ShouldGetTheUsersLinksByDateRange()
+    {
+        var link = CreateGenericLink();
+        var link2 = CreateGenericLink(2);
+        link.Date = new DateTime(2022,2,17);
+        link2.Date = new DateTime(2022, 2, 10);
+        var group = CreateGenericGroup();
+        var user = CreateGenericUser();
+        _jeebkaService.CreateUser(user);
+        _jeebkaService.CreateGroup(group, user.Email);
+        var groupId = _jeebkaService.GetGroup(group.Name, user.Email).Id;
+        _jeebkaService.CreateLink(link, user.Email, group.Name); _jeebkaService.CreateLink(link2, user.Email, group.Name);
+        _jeebkaService.AddTagToLink(user.Email, group.Name, link.Name,"tag1"); _jeebkaService.AddTagToLink(user.Email, group.Name, link2.Name,"tag1");
+        _jeebkaService.AddTagToLink(user.Email, group.Name, link.Name,"tag2");
+        var userLinks = _jeebkaService.GetLinksByDateRange(new List<string>{groupId}, DateTime.Today, new DateTime(2022,2,15));
+        Assert.True(userLinks.Count == 1);
+        Assert.True(userLinks[0].Name == link.Name);
+    }
+    
+    [Test]
+    public void ShouldGetTheUsersLinksByUrl()
+    {
+        var link = CreateGenericLink();
+        var link2 = CreateGenericLink(2);
+        var group = CreateGenericGroup();
+        var user = CreateGenericUser();
+        _jeebkaService.CreateUser(user);
+        _jeebkaService.CreateGroup(group, user.Email);
+        var groupId = _jeebkaService.GetGroup(group.Name, user.Email).Id;
+        _jeebkaService.CreateLink(link, user.Email, group.Name); _jeebkaService.CreateLink(link2, user.Email, group.Name);
+        _jeebkaService.AddTagToLink(user.Email, group.Name, link.Name,"tag1"); _jeebkaService.AddTagToLink(user.Email, group.Name, link2.Name,"tag1");
+        _jeebkaService.AddTagToLink(user.Email, group.Name, link.Name,"tag2");
+        var userLinks = _jeebkaService.GetLinksByUrl(new List<string> {groupId}, "Test2");
+        Assert.True(userLinks.Count == 1);
+        Assert.True(userLinks[0].Name == link2.Name);
     }
     
     //Generic entities
