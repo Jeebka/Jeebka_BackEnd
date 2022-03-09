@@ -27,10 +27,10 @@ public class User
         return new User
         {
             Id = ObjectId.GenerateNewId().ToString(),
-            Email = userDto.Email,
-            Groups = new List<string>(),
             Name = userDto.Name,
-            Password = userDto.Password
+            Password = userDto.Password,
+            Email = userDto.Email,
+            Groups = new List<string>()
         };
     }
 }

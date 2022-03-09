@@ -38,6 +38,32 @@ public class GroupRepository
         return GetGroup(findByNameAndUserFilter);
     }
 
+    public Dictionary<Group, int> GetMostMatchingPublicGroupsByTags(string userEmail, List<string> tagsToMatch)
+    {
+        var groupsWithAMatch = new List<Group>();
+        foreach (var tagToMatch in tagsToMatch)
+        {
+            var findByNameAndUserFilter = Builders<Group>.Filter.Eq("Public", true) 
+                                          & Builders<Group>.Filter.AnyEq("linksTags", tagToMatch)
+                                          & !Builders<Group>.Filter.AnyEq("Members", userEmail);
+            groupsWithAMatch = _collection.Find(findByNameAndUserFilter).ToList();
+            
+        }
+        
+        var maxMatchGroups = new Dictionary<Group, int>();
+        foreach (var group in groupsWithAMatch)
+        {
+            maxMatchGroups.Add(group, 0);
+            foreach (var linksTags in @group.LinksTags.Where(linksTags => tagsToMatch.Contains(linksTags)))
+            {
+                maxMatchGroups[@group]++;
+            }
+        }
+
+        return new Dictionary<Group, int>(maxMatchGroups.OrderByDescending(key => key.Value));
+        
+    }
+
     public void DeleteGroup(string userEmail, string groupName)
     {
         var group = GetGroup(userEmail, groupName);
@@ -83,6 +109,15 @@ public class GroupRepository
         var findByIdFilter = Builders<Group>.Filter.Eq("Id", groupId);
         var addLinkUpdate = Builders<Group>.Update.Push("Links", linkId);
         _collection.UpdateOne(findByIdFilter, addLinkUpdate);
+    }
+
+    public void AddTagToGroup(string userEmail, string groupName, string tagName)
+    {
+        var group = GetGroup(userEmail, groupName);
+        group?.LinksTags.Add(tagName);
+        var addTagToGroupUpdate = Builders<Group>.Update.Set("LinksTags", group?.LinksTags);
+            var findById = Builders<Group>.Filter.Eq("Id", group.Id);
+        _collection.UpdateOne(findById, addTagToGroupUpdate);
     }
 
     public void DeleteLinkFromGroup(string groupId, string linkId)

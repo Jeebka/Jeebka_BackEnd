@@ -8,6 +8,7 @@ public class JeebkaService
     private UserRepository _userRepository;
     private LinkRepository _linkRepository;
     private GroupRepository _groupRepository;
+    private int _maxTagNumberByTag = 7;
 
     public JeebkaService(UserRepository userRepository, GroupRepository groupRepository, LinkRepository linkRepository)
     {
@@ -141,8 +142,15 @@ public class JeebkaService
     {
         var group = _groupRepository.GetGroup(userEmail, groupName);
         var link = _linkRepository.GetLinkByName(linkName, group.Id);
-        var notExists = !link.Tags.Contains(tagName);
-        if (notExists) _linkRepository.AddTagToLink(link.Id, tagName);
+        var notExists = false;
+        if (_maxTagNumberByTag < link.Tags.Count() + 1) return notExists;
+        notExists = !link.Tags.Contains(tagName);
+        if (notExists)
+        {
+            _linkRepository.AddTagToLink(link.Id, tagName);
+            _groupRepository.AddTagToGroup(userEmail, groupName, tagName);
+        }
+
         return notExists;
     }
 
@@ -153,7 +161,23 @@ public class JeebkaService
         _linkRepository.DeleteTagFromLink(link.Id, tagName);
     }
     
-    //Queries 
+    //Queries
+
+    public Dictionary<Group, int> GetMostMatchingPublicGroupsByTags(string userEmail)
+    {
+        var userTags = GetUsersTags(userEmail).ToList();
+        return _groupRepository.GetMostMatchingPublicGroupsByTags(userEmail, userTags);
+    }
+
+    public HashSet<string> GetUsersTags(string userEmail)
+    {
+        var usersTags = new HashSet<string>();
+        foreach (var groupName in _userRepository.GetUser(userEmail).Groups)
+        {
+            usersTags.UnionWith(_groupRepository.GetGroup(userEmail, groupName).LinksTags);
+        }
+        return usersTags;
+    }
 
     public List<Link> GetLinksByTags(List<string> groups, List<string> tags)
     {

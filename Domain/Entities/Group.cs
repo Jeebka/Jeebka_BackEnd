@@ -16,6 +16,12 @@ public class Group
     [BsonElement("description")]
     public string Description { get; set; }
     
+    [BsonElement("public")]
+    public bool Public { get; set; }
+    
+    [BsonElement("linksTags")]
+    public HashSet<string> LinksTags { get; set; }
+
     [BsonElement("members")]
     public List<string> Members { get; set; }
     
@@ -27,10 +33,12 @@ public class Group
         return new Group
         {
             Id = ObjectId.GenerateNewId().ToString(),
+            Name = groupDto.Name,
             Description = groupDto.Description,
-            Links = new List<string>(),
+            Public =  groupDto.Public,
+            LinksTags = new HashSet<string>(),
             Members = new List<string>(),
-            Name = groupDto.Name
+            Links = new List<string>()
         };
     }
 }

@@ -76,6 +76,13 @@ public class JeebkaController : ControllerBase
         return Ok();
     }
 
+
+    [HttpGet("users/{email}/publics")]
+    public IActionResult ShowPublicGroups(string userEmail)
+    {
+        return Ok(_jeebkaService.GetMostMatchingPublicGroupsByTags(userEmail));
+    }
+
     [HttpPost("users/{email}/groups/{name}/links")]
     public IActionResult CreateLink(Link link, string email, string name)
     {
@@ -118,7 +125,4 @@ public class JeebkaController : ControllerBase
         _jeebkaService.DeleteTagFromLink(email, name, linkName, tagName);
         return Ok();
     }
-    
-    
-    
 }

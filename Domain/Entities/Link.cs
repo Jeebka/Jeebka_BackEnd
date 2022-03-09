@@ -31,11 +31,11 @@ public class Link
         return new Link
         {
             Id = ObjectId.GenerateNewId().ToString(),
-            Groups = new List<string>(),
+            Url = linkDto.Url,
             Name = linkDto.Name,
             Date = linkDto.Date,
-            Tags = new List<string>(),
-            Url = linkDto.Url
+            Groups = new List<string>(),
+            Tags = new List<string>()
         };
     }
 }
