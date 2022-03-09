@@ -1,12 +1,15 @@
 ﻿using Business.Services;
 using Domain.DTOs;
 using Domain.Entities;
+using Helper.JWT;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Presentation.Controllers;
 
 [ApiController]
 [Route("/v1/jeebka")]
+[Authorize]
 public class JeebkaController : ControllerBase
 {
     private JeebkaService _jeebkaService;
@@ -17,6 +20,7 @@ public class JeebkaController : ControllerBase
     }
     
     [HttpPost("users")]
+    [AllowAnonymous]
     public IActionResult CreateUser(UserDto user)
     {
         IActionResult response = Created("~/v1/jeebka/users/" + user.Email, user);
@@ -91,7 +95,7 @@ public class JeebkaController : ControllerBase
         return response;
     }
     
-    [HttpDelete("users/{email}/groups/{name}/links/{linkId}")]
+    [HttpPut("users/{email}/groups/{name}/links/{linkId}")]
     public IActionResult RemoveLink(string email, string name, string linkId)
     {
         _jeebkaService.DeleteLinkFromGroup(email, name, linkId);
@@ -124,5 +128,20 @@ public class JeebkaController : ControllerBase
     {
         _jeebkaService.DeleteTagFromLink(email, name, linkName, tagName);
         return Ok();
+    }
+
+    [AllowAnonymous]
+    [HttpPost("login")]
+    public IActionResult Login(UserDto user)
+    {
+
+        if (!_jeebkaService.Login(user)) return Unauthorized();
+        var token = JwtHelper.CreateToken(user.Email);
+        return Ok(new
+        {
+            email = user.Email,
+            msg = "loged",
+            token
+        });
     }
 }

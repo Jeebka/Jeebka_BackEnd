@@ -1,4 +1,7 @@
-﻿using Domain.Entities;
+﻿using Domain.DTOs;
+using Domain.Entities;
+using Helper;
+using Helper.Hasher;
 using Infrastructure.Repositories;
 
 namespace Business.Services;
@@ -21,7 +24,12 @@ public class JeebkaService
     public bool CreateUser(User user)
     {
         var notExists = _userRepository.GetUser(user.Email) == null;
-        if (notExists) _userRepository.CreateUser(user);
+        if (notExists)
+        {
+            HashedPassword hashedPassword = HashHelper.Hash(user.Password);
+            user.Password = hashedPassword.Password + " " + hashedPassword.Salt;
+            _userRepository.CreateUser(user);
+        }
         return notExists;
     }
 
@@ -197,5 +205,16 @@ public class JeebkaService
     public List<Link> GetLinksByUrl(List<string> groups, string url)
     {
         return _linkRepository.GetLinksByName(groups, url).Result;
+    }
+
+    public bool Login(UserDto user)
+    {
+        bool loged = false;
+        User? authenticationUser = GetUserByEmail(user.Email);
+        if (authenticationUser==null)  return loged;
+        string[] hashAndSalt = authenticationUser.Password.Split(' ');
+        string hash = hashAndSalt[0], salt = hashAndSalt[1];
+        loged = HashHelper.CheckHash(user.Password, hash, salt);
+        return loged;
     }
 }

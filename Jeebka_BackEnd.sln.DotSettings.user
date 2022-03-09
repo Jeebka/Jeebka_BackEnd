@@ -1,6 +1,11 @@
 ﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+<<<<<<< HEAD
 	<s:String x:Key="/Default/Environment/Highlighting/HighlightingSourceSnapshotLocation/@EntryValue">C:\Users\Luis\AppData\Local\JetBrains\Rider2021.3\resharper-host\temp\Rider\vAny\CoverageData\_Jeebka_BackEnd.1325281953\Snapshot\snapshot.utdcvr</s:String>
 	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=0e302d4a_002De65e_002D4676_002D9a2a_002D1f30112c3614/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="ShouldCreateALink" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+=======
+	
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=0e302d4a_002De65e_002D4676_002D9a2a_002D1f30112c3614/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="ShouldCreateALink" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+>>>>>>> feature/SecurityApi
   &lt;TestAncestor&gt;&#xD;
     &lt;TestId&gt;NUnit3x::42A5F304-1E8F-4502-9352-1FFF7E1B5C6B::net6.0::Test.Tests&lt;/TestId&gt;&#xD;
   &lt;/TestAncestor&gt;&#xD;
