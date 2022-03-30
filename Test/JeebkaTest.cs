@@ -116,7 +116,64 @@ public class Tests
         var members = _jeebkaService.GetGroup(group.Name, user.Email).Members;
         Assert.True(members.Contains(user.Email) && members.Contains(user2.Email));
     }
-    
+
+    [Test]
+    public void ShouldGetGroupsUserOnlyMember()
+    {
+        var user = CreateGenericUser();
+        var user2 = CreateGenericUser(2);
+        var group = CreateGenericGroup();
+        var group2 = CreateGenericGroup(2);
+        _jeebkaService.CreateUser(user);
+        _jeebkaService.CreateUser(user2);
+        _jeebkaService.CreateGroup(group, user.Email);
+        _jeebkaService.CreateGroup(group2, user.Email);
+        _jeebkaService.ShareGroup(group.Name, user.Email, user2.Email);
+        var userGroups = _jeebkaService.GetGroupsUserOnlyMember(user.Email);
+        Assert.True(userGroups.Count == 1);
+        foreach (var userGroup in userGroups)
+        {
+            if (userGroup.Name.Equals(group2.Name))
+            {
+                Assert.True(true);
+            }
+            else
+            {
+                Assert.Fail();
+            }
+        }
+    }
+
+    [Test]
+    public void ShouldGetGroupsWhereUsersInMembers()
+    {
+        var user = CreateGenericUser();
+        var user2 = CreateGenericUser(2);
+        var group = CreateGenericGroup();
+        var group2 = CreateGenericGroup(2);
+        var group3 = CreateGenericGroup(4);
+        _jeebkaService.CreateUser(user);
+        _jeebkaService.CreateUser(user2);
+        _jeebkaService.CreateGroup(group, user.Email);
+        _jeebkaService.CreateGroup(group2, user.Email);
+        _jeebkaService.CreateGroup(group3, user.Email);
+        _jeebkaService.ShareGroup(group.Name, user.Email, user2.Email);
+        _jeebkaService.ShareGroup(group2.Name, user.Email, user2.Email);
+        var userGroups = _jeebkaService.GetGroupsWhereUsersInMembers(user.Email);
+        Assert.True(userGroups.Count == 2);
+        foreach (var userGroup in userGroups)
+        {
+            if (userGroup.Name.Equals(group2.Name) || userGroup.Name.Equals(group.Name))
+            {
+                Assert.True(true);
+            }
+            else
+            {
+                Assert.Fail();
+            }
+        }
+    }
+
     [Test]
     public void ShouldCreateALink()
     {

@@ -25,6 +25,12 @@ public class GroupRepository
         return groupFound.Any() ? groupFound.First() : null;
     }
 
+    private List<Group>? GetGroups(FilterDefinition<Group> filter)
+    {
+        var groupFound = _collection.Find(filter);
+        return groupFound.Any() ? groupFound.ToList() : null;
+    }
+
     public Group? GetGroup(string groupId)
     {
         var findByIdFilter = Builders<Group>.Filter.Eq("Id", groupId);
@@ -36,6 +42,22 @@ public class GroupRepository
         var findByNameAndUserFilter = Builders<Group>.Filter.AnyEq("Members", userEmail) &
                                       Builders<Group>.Filter.Eq("Name", groupName);
         return GetGroup(findByNameAndUserFilter);
+    }
+
+    public List<Group> GetGroupsUserOnlyMember(string userEmail)
+    {
+        var findByUserFilter = Builders<Group>.Filter.AnyEq("Members", userEmail);
+        
+        return (GetGroups(findByUserFilter) ?? new List<Group>()).Where(@group => @group.Members.Count == 1).ToList();
+
+    }
+    
+    public List<Group> GetGroupsWhereUsersInMembers(string userEmail)
+    {
+        var findByUserFilter = Builders<Group>.Filter.AnyEq("Members", userEmail);
+        
+        return (GetGroups(findByUserFilter) ?? new List<Group>()).Where(@group => @group.Members.Count > 1).ToList();
+
     }
 
     public Dictionary<Group, int> GetMostMatchingPublicGroupsByTags(string userEmail, List<string> tagsToMatch)

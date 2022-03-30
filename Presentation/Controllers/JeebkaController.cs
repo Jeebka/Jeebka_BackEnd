@@ -79,6 +79,24 @@ public class JeebkaController : ControllerBase
         _jeebkaService.UnshareGroup(name, email, newOwnerEmail);
         return Ok();
     }
+    
+    [HttpGet("users/{email}/groups/{name}/members/notShared")]
+    public IActionResult GetGroupsUserOnlyMember(string email)
+    {
+        var groups = _jeebkaService.GetGroupsUserOnlyMember(email);
+        if (groups == null) return NotFound();
+        
+        return Ok(groups);
+    }
+    
+    [HttpGet("users/{email}/groups/{name}/members/shared")]
+    public IActionResult GetGroupsWhereUsersInMembers(string email)
+    {
+        var groups = _jeebkaService.GetGroupsWhereUsersInMembers(email);
+        if (groups == null) return NotFound();
+        
+        return Ok(groups);
+    }
 
 
     [HttpGet("users/{email}/publics")]

@@ -89,6 +89,16 @@ public class JeebkaService
             _groupRepository.DeleteUserFromGroupMembers(group, oldOwnerEmail);
         }
     }
+    
+    public List<Group> GetGroupsUserOnlyMember(string userEmail)
+    {
+        return _groupRepository.GetGroupsUserOnlyMember(userEmail);
+    }
+    
+    public List<Group> GetGroupsWhereUsersInMembers(string userEmail)
+    {
+        return _groupRepository.GetGroupsWhereUsersInMembers(userEmail);
+    }
 
     //Links
     public bool CreateLink(Link link, string userEmail, string groupName)
