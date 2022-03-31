@@ -1,4 +1,5 @@
-﻿using Domain.Entities;
+﻿using System.Collections.Immutable;
+using Domain.Entities;
 using MongoDB.Bson;
 using MongoDB.Driver;
 
@@ -88,31 +89,31 @@ public class LinkRepository
 
     //QUERIES
     
-    public async Task<List<Link>> GetLinksByTags(List<string> groups, List<string> tags)
+    public async Task<List<Link>> GetLinksByTags(string group, string tag)
     {
-        var findByGroupsAndTags = Builders<Link>.Filter.Eq("tags", tags) &
-                                  Builders<Link>.Filter.AnyIn("groups", groups);
+        var findByGroupsAndTags =
+            Builders<Link>.Filter.AnyEq("tags", tag) & Builders<Link>.Filter.AnyEq("groups", group);
         return await _collection.Find(findByGroupsAndTags).ToListAsync();
     }
 
-    public async Task<List<Link>> GetLinksByDateRange(List<string> groups, DateTime upperBound, DateTime lowerBound)
+    public async Task<List<Link>> GetLinksByDateRange(string group, DateTime upperBound, DateTime lowerBound)
     {
-        var findByGroupsAndDates = Builders<Link>.Filter.AnyIn("groups", groups) &
+        var findByGroupsAndDates = Builders<Link>.Filter.AnyEq("groups", group) &
                                    Builders<Link>.Filter.Gte("date", lowerBound) &
                                    Builders<Link>.Filter.Lte("date", upperBound);
         return await _collection.Find(findByGroupsAndDates).ToListAsync();
     }
 
-    public async Task<List<Link>> GetLinksByName(List<string> groups, string name)
+    public async Task<List<Link>> GetLinksByName(string group, string name)
     {
-        var findByGroupsAndName = Builders<Link>.Filter.AnyIn("groups", groups) &
+        var findByGroupsAndName = Builders<Link>.Filter.AnyEq("groups", group) &
                                    Builders<Link>.Filter.Regex("name", $"(.*)({name})(.*)");
         return await _collection.Find(findByGroupsAndName).ToListAsync();
     }
     
-    public async Task<List<Link>> GetLinksByUrl(List<string> groups, string url)
+    public async Task<List<Link>> GetLinksByUrl(string group, string url)
     {
-        var findByGroupsAndName = Builders<Link>.Filter.AnyIn("groups", groups) &
+        var findByGroupsAndName = Builders<Link>.Filter.AnyEq("groups", group) &
                                   Builders<Link>.Filter.Regex("url", $"(.*)({url})(.*)");
         return await _collection.Find(findByGroupsAndName).ToListAsync();
     }

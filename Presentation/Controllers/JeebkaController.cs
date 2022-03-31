@@ -127,13 +127,6 @@ public class JeebkaController : ControllerBase
         return Ok();
     }
 
-    [HttpGet("users/{email}/query/tags")]
-    public IActionResult GetQuery()
-    {
-        return Ok(_jeebkaService.GetLinksByTags(new List<string>(), new List<string>()));
-    }
-    
-
     [HttpPut("users/{email}/groups/{name}/links/{linkName}/tags/{tagName}")]
     public IActionResult AddTag(string email, string name, string linkName, string tagName)
     {
@@ -146,6 +139,43 @@ public class JeebkaController : ControllerBase
     {
         _jeebkaService.DeleteTagFromLink(email, name, linkName, tagName);
         return Ok();
+    }
+    
+    [HttpGet("users/{email}/query/matchingPublicGroups")]
+    public IActionResult GetMostMatchingPublicGroupsByTags(string email)
+    {
+        return Ok(_jeebkaService.GetMostMatchingPublicGroupsByTags(email));
+    }
+    
+    [HttpGet("users/{email}/query/tags")]
+    public IActionResult GetUsersTags(string email)
+    {
+        return Ok(_jeebkaService.GetUsersTags(email));
+    }
+    
+    [HttpGet("users/{email}/query/group/{group}/tag/{tag}")]
+    public IActionResult GetLinksByTags(string group, string tag)
+    {
+        //
+        return Ok(_jeebkaService.GetLinksByTags(group, tag));
+    }
+    
+    [HttpGet("users/{email}/query/group/{group}/dates/{lowerBound}/{upperBound}")]
+    public IActionResult GetLinksByDateRange(string group, DateTime upperBound, DateTime lowerBound)
+    {
+        return Ok(_jeebkaService.GetLinksByDateRange(group, upperBound, lowerBound));
+    }
+    
+    [HttpGet("users/{email}/query/group/{group}/name/{name}")]
+    public IActionResult GetLinksByName(string group, string name)
+    {
+        return Ok(_jeebkaService.GetLinksByName(group, name));
+    }
+    
+    [HttpGet("users/{email}/query/group/{group}/url/{url}")]
+    public IActionResult GetLinksByUrl(string group, string url)
+    {
+        return Ok(_jeebkaService.GetLinksByUrl(group, url));
     }
 
     [AllowAnonymous]

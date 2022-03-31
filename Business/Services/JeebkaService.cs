@@ -197,24 +197,24 @@ public class JeebkaService
         return usersTags;
     }
 
-    public List<Link> GetLinksByTags(List<string> groups, List<string> tags)
+    public List<Link> GetLinksByTags(string group, string tag)
     {
-        return _linkRepository.GetLinksByTags(groups, tags).Result;
+        return _linkRepository.GetLinksByTags(group, tag).Result;
     }
 
-    public List<Link> GetLinksByDateRange(List<string> groups, DateTime upperBound, DateTime lowerBound)
+    public List<Link> GetLinksByDateRange(string group, DateTime upperBound, DateTime lowerBound)
     {
-        return _linkRepository.GetLinksByDateRange(groups, upperBound, lowerBound).Result;
+        return _linkRepository.GetLinksByDateRange(group, upperBound, lowerBound).Result;
     }
 
-    public List<Link> GetLinksByName(List<string> groups, string name)
+    public List<Link> GetLinksByName(string group, string name)
     {
-        return _linkRepository.GetLinksByName(groups, name).Result;
+        return _linkRepository.GetLinksByName(group, name).Result;
     }
 
-    public List<Link> GetLinksByUrl(List<string> groups, string url)
+    public List<Link> GetLinksByUrl(string group, string url)
     {
-        return _linkRepository.GetLinksByName(groups, url).Result;
+        return _linkRepository.GetLinksByUrl(group, url).Result;
     }
 
     public bool Login(UserDto user)
