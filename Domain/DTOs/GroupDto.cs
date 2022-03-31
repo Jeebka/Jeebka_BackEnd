@@ -8,5 +8,7 @@ public class GroupDto
     public string Description { get; set; }
     
     public bool Public { get; set; }
+    
+    public string Color { get; set; }
 
 }

@@ -18,7 +18,10 @@ public class Group
     
     [BsonElement("public")]
     public bool Public { get; set; }
-    
+
+    [BsonElement("color")]
+    public string Color { get; set; }
+
     [BsonElement("linksTags")]
     public HashSet<string> LinksTags { get; set; }
 
@@ -36,6 +39,7 @@ public class Group
             Name = groupDto.Name,
             Description = groupDto.Description,
             Public =  groupDto.Public,
+            Color = groupDto.Color,
             LinksTags = new HashSet<string>(),
             Members = new List<string>(),
             Links = new List<string>()

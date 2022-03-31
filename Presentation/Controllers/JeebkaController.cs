@@ -3,6 +3,7 @@ using Domain.DTOs;
 using Domain.Entities;
 using Helper.JWT;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Presentation.Controllers;

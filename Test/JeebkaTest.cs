@@ -409,7 +409,8 @@ public class Tests
         {
             Name = $"GenericGroupNameTest{n}",
             Description = "Mollit consequat sunt anim ut aliquip nulla excepteur fugiat labore quis et nulla culpa. Et eu labore nisi veniam enim amet est. Dolor in sint tempor pariatur. Incididunt aliqua commodo cupidatat esse tempor officia ad duis. Aliquip deserunt duis sint nulla Lorem eu ex magna. Sit deserunt enim aute tempor qui adipisicing consequat et labore qui anim qui anim. Excepteur pariatur adipisicing sit occaecat et reprehenderit excepteur quis quis eiusmod est ullamco est est.",
-            Public = true
+            Public = true,
+            Color = "Azul"
         };
         return group;
     }
