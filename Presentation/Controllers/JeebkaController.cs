@@ -2,7 +2,6 @@
 using Domain.DTOs;
 using Domain.Entities;
 using Helper.JWT;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,7 +9,6 @@ namespace Presentation.Controllers;
 
 [ApiController]
 [Route("/v1/jeebka")]
-[Authorize]
 public class JeebkaController : ControllerBase
 {
     private JeebkaService _jeebkaService;
@@ -21,7 +19,6 @@ public class JeebkaController : ControllerBase
     }
     
     [HttpPost("users")]
-    [AllowAnonymous]
     public IActionResult CreateUser(UserDto user)
     {
         IActionResult response = Created("~/v1/jeebka/users/" + user.Email, user);
@@ -179,7 +176,6 @@ public class JeebkaController : ControllerBase
         return Ok(_jeebkaService.GetLinksByUrl(group, url));
     }
 
-    [AllowAnonymous]
     [HttpPost("login")]
     public IActionResult Login(UserDto user)
     {
