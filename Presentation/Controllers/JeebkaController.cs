@@ -78,7 +78,17 @@ public class JeebkaController : ControllerBase
         return Ok();
     }
     
-    [HttpGet("users/{email}/groups/{name}/members/notShared")]
+    [HttpGet("users/{email}/groups")]
+    public IActionResult GetUserGroups(string email)
+    {
+        var groups = _jeebkaService.GetGroupsUserOnlyMember(email);
+        groups.AddRange(_jeebkaService.GetGroupsWhereUsersInMembers(email));
+        if (groups == null) return NotFound();
+        
+        return Ok(groups);
+    }
+    
+    [HttpGet("users/{email}/groups/members/notShared")]
     public IActionResult GetGroupsUserOnlyMember(string email)
     {
         var groups = _jeebkaService.GetGroupsUserOnlyMember(email);
@@ -87,7 +97,7 @@ public class JeebkaController : ControllerBase
         return Ok(groups);
     }
     
-    [HttpGet("users/{email}/groups/{name}/members/shared")]
+    [HttpGet("users/{email}/groups/members/shared")]
     public IActionResult GetGroupsWhereUsersInMembers(string email)
     {
         var groups = _jeebkaService.GetGroupsWhereUsersInMembers(email);
@@ -98,9 +108,9 @@ public class JeebkaController : ControllerBase
 
 
     [HttpGet("users/{email}/publics")]
-    public IActionResult ShowPublicGroups(string userEmail)
+    public IActionResult ShowPublicGroups(string email)
     {
-        return Ok(_jeebkaService.GetMostMatchingPublicGroupsByTags(userEmail));
+        return Ok(_jeebkaService.GetMostMatchingPublicGroupsByTags(email));
     }
 
     [HttpPost("users/{email}/groups/{name}/links")]
@@ -152,26 +162,26 @@ public class JeebkaController : ControllerBase
     }
     
     [HttpGet("users/{email}/query/group/{group}/tag/{tag}")]
-    public IActionResult GetLinksByTags(string group, string tag)
+    public IActionResult GetLinksByTags(string email, string group, string tag)
     {
         //
         return Ok(_jeebkaService.GetLinksByTags(group, tag));
     }
     
     [HttpGet("users/{email}/query/group/{group}/dates/{lowerBound}/{upperBound}")]
-    public IActionResult GetLinksByDateRange(string group, DateTime upperBound, DateTime lowerBound)
+    public IActionResult GetLinksByDateRange(string email, string group, DateTime upperBound, DateTime lowerBound)
     {
         return Ok(_jeebkaService.GetLinksByDateRange(group, upperBound, lowerBound));
     }
     
     [HttpGet("users/{email}/query/group/{group}/name/{name}")]
-    public IActionResult GetLinksByName(string group, string name)
+    public IActionResult GetLinksByName(string email, string group, string name)
     {
         return Ok(_jeebkaService.GetLinksByName(group, name));
     }
     
     [HttpGet("users/{email}/query/group/{group}/url/{url}")]
-    public IActionResult GetLinksByUrl(string group, string url)
+    public IActionResult GetLinksByUrl(string email, string group, string url)
     {
         return Ok(_jeebkaService.GetLinksByUrl(group, url));
     }
