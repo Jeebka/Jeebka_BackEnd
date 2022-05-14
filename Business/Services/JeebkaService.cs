@@ -164,7 +164,6 @@ public class JeebkaService
     //Links
     public bool CreateLink(Link link, string userEmail, string groupName)
     {
-        Console.WriteLine(JsonConvert.SerializeObject(link));
         var group = _groupRepository.GetGroup(userEmail, groupName);
         var notExists = _linkRepository.ValidateLinkInGroup(link.Name, link.Url, group.Id);
         if (notExists)
