@@ -7,6 +7,4 @@ public class LinkDto
 
     public string Name { get; set; }
 
-    public DateTime Date { get; set; }
-
 }

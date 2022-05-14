@@ -305,8 +305,6 @@ public class Tests
     {
         var link = CreateGenericLink();
         var link2 = CreateGenericLink(2);
-        link.Date = new DateTime(2022,2,17);
-        link2.Date = new DateTime(2022, 2, 10);
         var group = CreateGenericGroup();
         var group2 = CreateGenericGroup(2);
         var user = CreateGenericUser();
@@ -384,8 +382,7 @@ public class Tests
         var link = new LinkDto
         {
             Url = $"https://www.creationLinkTest.tst{n}.jbk",
-            Name = $"GenericLinkNameTest{n}",
-            Date = DateTime.Now
+            Name = $"GenericLinkNameTest{n}"
         };
         return link;
     }

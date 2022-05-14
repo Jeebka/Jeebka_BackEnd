@@ -33,7 +33,7 @@ public class Link
             Id = ObjectId.GenerateNewId().ToString(),
             Url = linkDto.Url,
             Name = linkDto.Name,
-            Date = linkDto.Date,
+            Date = DateTime.Now,
             Groups = new List<string>(),
             Tags = new List<string>()
         };
