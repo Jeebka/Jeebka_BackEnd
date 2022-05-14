@@ -9,6 +9,7 @@ using Newtonsoft.Json;
 
 namespace Business.Services;
 
+//I said this looks like a job for me
 public class JeebkaService
 {
     private UserRepository _userRepository;
