@@ -104,19 +104,6 @@ public class Tests
     }
 
     [Test]
-    public void ShouldAddAUserToGroupMembers()
-    {
-        var user = CreateGenericUser();
-        var user2 = CreateGenericUser(2);
-        var group = CreateGenericGroup();
-        _jeebkaService.CreateUser(user);
-        _jeebkaService.CreateGroup(group, user.Email);
-        _jeebkaService.ShareGroup(group.Name, user.Email, user2.Email);
-        var members = _jeebkaService.GetGroup(group.Name, user.Email).Members;
-        Assert.True(members.Contains(user.Email) && members.Contains(user2.Email));
-    }
-
-    [Test]
     public void ShouldGetGroupsUserOnlyMember()
     {
         var user = CreateGenericUser();

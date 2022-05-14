@@ -114,7 +114,7 @@ public class JeebkaController : ControllerBase
     }
 
     [HttpPost("users/{email}/groups/{name}/links")]
-    public IActionResult CreateLink(Link link, string email, string name)
+    public IActionResult CreateLink(LinkDto link, string email, string name)
     {
         IActionResult response = Created($"users/{email}/groups/{name}/links/{link.Name}", link);
         if (!_jeebkaService.CreateLink(link, email, name)) response = Conflict();

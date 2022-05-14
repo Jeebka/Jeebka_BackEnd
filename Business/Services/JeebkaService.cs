@@ -1,8 +1,10 @@
 ﻿using Domain.DTOs;
 using Domain.Entities;
+using Domain.Responses;
 using Helper;
 using Helper.Hasher;
 using Infrastructure.Repositories;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Business.Services;
 
@@ -33,9 +35,16 @@ public class JeebkaService
         return notExists;
     }
 
-    public User? GetUserByEmail(string email)
+    public UserResponse? GetUserByEmail(string email)
     {
-        return _userRepository.GetUser(email);
+        var user = _userRepository.GetUser(email);
+        var response = (UserResponse) user;
+        foreach (var groupId in user.Groups)
+        {
+            response.Groups.Add(GetGroup(groupId));
+        }
+        
+        return response;
     }
     
     public void DeleteUserByEmail(string email)
@@ -58,9 +67,30 @@ public class JeebkaService
         return notExists;
     }
 
-    public Group? GetGroup(string groupName, string userEmail)
+    private GroupResponse? GetGroup(string groupId)
     {
-        return _groupRepository.GetGroup(userEmail, groupName);
+        var group = _groupRepository.GetGroup(groupId);
+        var response = (GroupResponse) group;
+        foreach (var linkId in group.Links)
+        {
+            var link = !linkId.IsNullOrEmpty() ? _linkRepository.GetLink(linkId) : null;
+            if (link != null) response.Links.Add(link);
+        }
+
+        return response;
+    }
+    
+    public GroupResponse? GetGroup(string groupName, string userEmail)
+    {
+        var group = _groupRepository.GetGroup(userEmail, groupName);
+        var response = (GroupResponse) group;
+        foreach (var linkId in group.Links)
+        {
+            var link = !linkId.IsNullOrEmpty() ? _linkRepository.GetLink(linkId) : null;
+            if (link != null) response.Links.Add(link);
+        }
+
+        return response;
     }
 
     public void DeleteGroup(string userEmail, string groupName)
@@ -72,7 +102,7 @@ public class JeebkaService
     public bool ShareGroup(string groupName, string userEmail, string newOwnerEmail)
     {
         var userAdded = false;
-        var group = GetGroup(groupName, userEmail);
+        var group = _groupRepository.GetGroup(userEmail, groupName);
         if (group != null)
         {
             userAdded = _groupRepository.AddUserToGroupMembers(group, newOwnerEmail);
@@ -83,21 +113,47 @@ public class JeebkaService
     
     public void UnshareGroup(string groupName, string userEmail, string oldOwnerEmail)
     {
-        var group = GetGroup(groupName, userEmail);
+        var group = _groupRepository.GetGroup(userEmail, groupName);
         if (group != null)
         {
             _groupRepository.DeleteUserFromGroupMembers(group, oldOwnerEmail);
         }
     }
     
-    public List<Group> GetGroupsUserOnlyMember(string userEmail)
+    public List<GroupResponse> GetGroupsUserOnlyMember(string userEmail)
     {
-        return _groupRepository.GetGroupsUserOnlyMember(userEmail);
+        var groups = _groupRepository.GetGroupsUserOnlyMember(userEmail);
+        var response = new List<GroupResponse>();
+        foreach (var group in groups)
+        {
+            var responseGroup = (GroupResponse) group;
+            foreach (var linkId in group.Links)
+            {
+                var link = !linkId.IsNullOrEmpty() ? _linkRepository.GetLink(linkId) : null;
+                if (link != null) responseGroup.Links.Add(link);
+            }
+            response.Add(responseGroup);
+        }
+        
+        return response;
     }
     
-    public List<Group> GetGroupsWhereUsersInMembers(string userEmail)
+    public List<GroupResponse> GetGroupsWhereUsersInMembers(string userEmail)
     {
-        return _groupRepository.GetGroupsWhereUsersInMembers(userEmail);
+        var groups = _groupRepository.GetGroupsWhereUsersInMembers(userEmail);
+        var response = new List<GroupResponse>();
+        foreach (var group in groups)
+        {
+            var responseGroup = (GroupResponse) group;
+            foreach (var linkId in group.Links)
+            {
+                var link = !linkId.IsNullOrEmpty() ? _linkRepository.GetLink(linkId) : null;
+                if (link != null) responseGroup.Links.Add(link);
+            }
+            response.Add(responseGroup);
+        }
+        
+        return response;
     }
 
     //Links
@@ -220,7 +276,7 @@ public class JeebkaService
     public bool Login(UserDto user)
     {
         bool loged = false;
-        User? authenticationUser = GetUserByEmail(user.Email);
+        User? authenticationUser = _userRepository.GetUser(user.Email);
         if (authenticationUser==null)  return loged;
         string[] hashAndSalt = authenticationUser.Password.Split(' ');
         string hash = hashAndSalt[0], salt = hashAndSalt[1];
