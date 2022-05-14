@@ -214,4 +214,10 @@ public class JeebkaController : ControllerBase
             token
         });
     }
+
+    [HttpGet("wave")]
+    public IActionResult Wave()
+    {
+        return Ok("Its working... Guess");
+    }
 }
