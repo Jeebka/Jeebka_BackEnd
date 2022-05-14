@@ -12,6 +12,7 @@ public class GroupResponse
     public string Color { get; set; }
     public List<LinkResponse> Links { get; set; }
     public IEnumerable<string> LinksTags { get; set; }
+    public List<string> Members { get; set; }
     
     public static implicit operator GroupResponse(Group group)
     {
@@ -24,6 +25,7 @@ public class GroupResponse
             Public =  group.Public,
             Color = group.Color,
             LinksTags = group.LinksTags,
+            Members = group.Members,
             Links = new List<LinkResponse>()
         };
     }
