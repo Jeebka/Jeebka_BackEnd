@@ -120,6 +120,14 @@ public class JeebkaController : ControllerBase
         return response;
     }
     
+    [HttpPost("users/{email}/groups/{name}/tagLinks")]
+    public IActionResult CreateLink(TaggedLinkDto link, string email, string name)
+    {
+        IActionResult response = Created($"users/{email}/groups/{name}/links/{link.Name}", link);
+        if (!_jeebkaService.CreateLink(link, email, name)) response = Conflict();
+        return response;
+    }
+    
     [HttpPut("users/{email}/groups/{name}/links/{linkId}")]
     public IActionResult RemoveLink(string email, string name, string linkId)
     {

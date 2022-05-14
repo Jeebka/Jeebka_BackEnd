@@ -38,4 +38,17 @@ public class Link
             Tags = new List<string>()
         };
     }
+    
+    public static implicit operator Link(TaggedLinkDto linkDto)
+    {
+        return new Link
+        {
+            Id = ObjectId.GenerateNewId().ToString(),
+            Url = linkDto.Url,
+            Name = linkDto.Name,
+            Date = DateTime.Now,
+            Groups = new List<string>(),
+            Tags = linkDto.Tags
+        };
+    }
 }

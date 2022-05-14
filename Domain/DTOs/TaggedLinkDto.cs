@@ -1,8 +1,8 @@
 namespace Domain.DTOs;
 
-[Serializable]
-public class LinkDto
+public class TaggedLinkDto
 {
     public string Url { get; set; }
     public string Name { get; set; }
+    public List<string> Tags { get; set; }
 }

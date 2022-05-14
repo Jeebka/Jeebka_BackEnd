@@ -19,7 +19,7 @@ public class LinkResponse
             Url = link.Url,
             Name = link.Name,
             Date = link.Date,
-            Tags = new List<string>()
+            Tags = link.Tags
         };
     }
 }
