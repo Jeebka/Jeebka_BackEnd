@@ -122,7 +122,7 @@ public class JeebkaController : ControllerBase
         }
         catch (Exception e)
         {
-            response = BadRequest(e.StackTrace);
+            response = BadRequest(e.Message);
         }
         
         return response;
