@@ -1,3 +1,4 @@
+using System.Text.Json;
 using Domain.Entities;
 
 namespace Domain.Responses;
@@ -14,6 +15,7 @@ public class GroupResponse
     
     public static implicit operator GroupResponse(Group group)
     {
+        Console.WriteLine(JsonSerializer.Serialize(group));
         return new GroupResponse
         {
             Id = group.Id,

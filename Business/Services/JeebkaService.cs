@@ -39,9 +39,10 @@ public class JeebkaService
     {
         var user = _userRepository.GetUser(email);
         var response = (UserResponse) user;
-        foreach (var groupId in user.Groups)
+        foreach (var groupName in user.Groups)
         {
-            response.Groups.Add(GetGroup(groupId));
+            var group = !groupName.IsNullOrEmpty() ? GetGroup(groupName, email) : null;
+            if (group != null) response.Groups.Add(group);
         }
         
         return response;
@@ -70,6 +71,7 @@ public class JeebkaService
     private GroupResponse? GetGroup(string groupId)
     {
         var group = _groupRepository.GetGroup(groupId);
+        if (group == null) return null;
         var response = (GroupResponse) group;
         foreach (var linkId in group.Links)
         {
@@ -83,6 +85,7 @@ public class JeebkaService
     public GroupResponse? GetGroup(string groupName, string userEmail)
     {
         var group = _groupRepository.GetGroup(userEmail, groupName);
+        if (group == null) return null;
         var response = (GroupResponse) group;
         foreach (var linkId in group.Links)
         {

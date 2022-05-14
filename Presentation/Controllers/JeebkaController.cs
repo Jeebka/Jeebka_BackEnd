@@ -105,8 +105,7 @@ public class JeebkaController : ControllerBase
         
         return Ok(groups);
     }
-
-
+    
     [HttpGet("users/{email}/publics")]
     public IActionResult ShowPublicGroups(string email)
     {
