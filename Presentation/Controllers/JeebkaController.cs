@@ -1,8 +1,6 @@
 ﻿using Business.Services;
 using Domain.DTOs;
-using Domain.Entities;
 using Helper.JWT;
-using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Presentation.Controllers;
@@ -208,11 +206,5 @@ public class JeebkaController : ControllerBase
     {
         
         return Ok();
-    }
-    
-    [HttpGet("wave")]
-    public IActionResult Wave()
-    {
-        return Ok("Its working... Guess");
     }
 }

@@ -1,6 +1,5 @@
 ﻿using Domain.Entities;
 using MongoDB.Driver;
-using JsonConvert = Newtonsoft.Json.JsonConvert;
 
 namespace Infrastructure.Repositories;
 
