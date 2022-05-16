@@ -11,7 +11,7 @@ public class GroupResponse
     public bool Public { get; set; }
     public string Color { get; set; }
     public List<LinkResponse> Links { get; set; }
-    public IEnumerable<string> LinksTags { get; set; }
+    public HashSet<string> LinksTags { get; set; }
     public List<string> Members { get; set; }
     
     public static implicit operator GroupResponse(Group group)

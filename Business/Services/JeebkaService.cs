@@ -1,5 +1,6 @@
 ﻿using Domain.DTOs;
 using Domain.Entities;
+using Domain.Extensions;
 using Domain.Responses;
 using Helper;
 using Helper.Hasher;
@@ -78,7 +79,9 @@ public class JeebkaService
         foreach (var linkId in group.Links)
         {
             var link = !linkId.IsNullOrEmpty() ? _linkRepository.GetLink(linkId) : null;
-            if (link != null) response.Links.Add(link);
+            if (link == null) continue;
+            response.Links.Add(link);
+            response.LinksTags.AddRange(link.Tags);
         }
 
         return response;
@@ -92,7 +95,9 @@ public class JeebkaService
         foreach (var linkId in group.Links)
         {
             var link = !linkId.IsNullOrEmpty() ? _linkRepository.GetLink(linkId) : null;
-            if (link != null) response.Links.Add(link);
+            if (link == null) continue;
+            response.Links.Add(link);
+            response.LinksTags.AddRange(link.Tags);
         }
 
         return response;
@@ -135,7 +140,11 @@ public class JeebkaService
             foreach (var linkId in group.Links)
             {
                 var link = !linkId.IsNullOrEmpty() ? _linkRepository.GetLink(linkId) : null;
-                if (link != null) responseGroup.Links.Add(link);
+                if (link != null)
+                {
+                    responseGroup.Links.Add(link);
+                    responseGroup.LinksTags.AddRange(link.Tags);
+                }
             }
             response.Add(responseGroup);
         }
@@ -153,7 +162,11 @@ public class JeebkaService
             foreach (var linkId in group.Links)
             {
                 var link = !linkId.IsNullOrEmpty() ? _linkRepository.GetLink(linkId) : null;
-                if (link != null) responseGroup.Links.Add(link);
+                if (link != null)
+                {
+                    responseGroup.Links.Add(link);
+                    responseGroup.LinksTags.AddRange(link.Tags);
+                }
             }
             response.Add(responseGroup);
         }
