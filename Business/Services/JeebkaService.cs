@@ -278,11 +278,9 @@ public class JeebkaService
     {
         var usersTags = new HashSet<string>();
         var groups = _userRepository.GetUser(userEmail)?.Groups;
-        Console.WriteLine(JsonConvert.SerializeObject(_userRepository.GetUser(userEmail)));
         groups ??= new List<string>();
         foreach (var groupName in groups)
         {
-            Console.WriteLine(groupName);
             var groupTags = GetGroup(groupName, userEmail).LinksTags;
             usersTags.AddRange(groupTags);
         }
