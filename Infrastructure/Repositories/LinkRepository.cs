@@ -20,6 +20,12 @@ public class LinkRepository
         _collection.InsertOne(link);
     }
 
+    public void UpdateLink(string linkId, Link link)
+    {
+        var findByIdFilter = Builders<Link>.Filter.Eq("Id", linkId);
+        _collection.ReplaceOne(findByIdFilter, link);
+    }
+
     public void DeleteLink(string linkId)
     {
         var findByIdFilter = Builders<Link>.Filter.Eq("Id", linkId);

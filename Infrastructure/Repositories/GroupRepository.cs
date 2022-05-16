@@ -1,7 +1,6 @@
 ﻿using Domain.Entities;
-using Infrastructure.Clients;
-using MongoDB.Bson;
 using MongoDB.Driver;
+using JsonConvert = Newtonsoft.Json.JsonConvert;
 
 namespace Infrastructure.Repositories;
 
@@ -18,6 +17,7 @@ public class GroupRepository
     {
         _collection.InsertOne(group);
     }
+    
 
     private Group? GetGroup(FilterDefinition<Group> filter)
     {
@@ -60,30 +60,26 @@ public class GroupRepository
 
     }
 
-    public Dictionary<Group, int> GetMostMatchingPublicGroupsByTags(string userEmail, List<string> tagsToMatch)
+    public List<Group> GetMostMatchingPublicGroupsByTags(string userEmail, List<string> tagsToMatch)
     {
         var groupsWithAMatch = new List<Group>();
         foreach (var tagToMatch in tagsToMatch)
         {
-            var findByNameAndUserFilter = Builders<Group>.Filter.Eq("Public", true) 
+            var findByNameAndUserFilter = Builders<Group>.Filter.Eq("Public", true)
                                           & Builders<Group>.Filter.AnyEq("linksTags", tagToMatch)
                                           & !Builders<Group>.Filter.AnyEq("Members", userEmail);
-            groupsWithAMatch = _collection.Find(findByNameAndUserFilter).ToList();
-            
-        }
-        
-        var maxMatchGroups = new Dictionary<Group, int>();
-        foreach (var group in groupsWithAMatch)
-        {
-            maxMatchGroups.Add(group, 0);
-            foreach (var linksTags in @group.LinksTags.Where(linksTags => tagsToMatch.Contains(linksTags)))
-            {
-                maxMatchGroups[@group]++;
-            }
+            groupsWithAMatch.AddRange(_collection.Find(findByNameAndUserFilter).ToList());
         }
 
-        return new Dictionary<Group, int>(maxMatchGroups.OrderByDescending(key => key.Value));
-        
+        var groupWithAMatch = groupsWithAMatch.OrderBy(group => CountTagsMatch(group.LinksTags.ToList(), tagsToMatch)).ToList();
+        return groupsWithAMatch;
+
+    }
+
+    private int CountTagsMatch(List<string> linkTags, List<string> linkTagsToMatch)
+    {
+        var matches = linkTagsToMatch.Sum(linkTag => linkTags.Contains(linkTag) ? 1 : 0);
+        return matches;
     }
 
     public void DeleteGroup(string userEmail, string groupName)

@@ -25,6 +25,8 @@ public class JeebkaService
         _linkRepository = linkRepository;
     }
     
+    
+    
     //Users
     public bool CreateUser(User user)
     {
@@ -81,7 +83,7 @@ public class JeebkaService
             var link = !linkId.IsNullOrEmpty() ? _linkRepository.GetLink(linkId) : null;
             if (link == null) continue;
             response.Links.Add(link);
-            response.LinksTags.AddRange(link.Tags);
+            //response.LinksTags.AddRange(link.Tags);
         }
 
         return response;
@@ -97,7 +99,7 @@ public class JeebkaService
             var link = !linkId.IsNullOrEmpty() ? _linkRepository.GetLink(linkId) : null;
             if (link == null) continue;
             response.Links.Add(link);
-            response.LinksTags.AddRange(link.Tags);
+            //response.LinksTags.AddRange(link.Tags);
         }
 
         return response;
@@ -143,7 +145,7 @@ public class JeebkaService
                 if (link != null)
                 {
                     responseGroup.Links.Add(link);
-                    responseGroup.LinksTags.AddRange(link.Tags);
+                    //responseGroup.LinksTags.AddRange(link.Tags);
                 }
             }
             response.Add(responseGroup);
@@ -165,7 +167,7 @@ public class JeebkaService
                 if (link != null)
                 {
                     responseGroup.Links.Add(link);
-                    responseGroup.LinksTags.AddRange(link.Tags);
+                    //responseGroup.LinksTags.AddRange(link.Tags);
                 }
             }
             response.Add(responseGroup);
@@ -184,6 +186,10 @@ public class JeebkaService
             _linkRepository.CreateLink(link, out var linkId);
             _groupRepository.AddLinkToGroup(group.Id, linkId);
             _linkRepository.AddGroupToLink(group.Id, linkId);
+            foreach (var linkTag in link.Tags)
+            {
+                _groupRepository.AddTagToGroup(userEmail,groupName,linkTag);
+            }
         }
         return notExists;
     }
@@ -255,18 +261,30 @@ public class JeebkaService
     
     //Queries
 
-    public Dictionary<Group, int> GetMostMatchingPublicGroupsByTags(string userEmail)
+    public List<GroupResponse> GetMostMatchingPublicGroupsByTags(string userEmail)
     {
         var userTags = GetUsersTags(userEmail).ToList();
-        return _groupRepository.GetMostMatchingPublicGroupsByTags(userEmail, userTags);
+        var matches = _groupRepository.GetMostMatchingPublicGroupsByTags(userEmail, userTags);
+        var responses = new List<GroupResponse>();
+        foreach (var match in matches)
+        {
+            responses.Add(GetGroup(match.Id));
+        }
+
+        return responses;
     }
 
     public HashSet<string> GetUsersTags(string userEmail)
     {
         var usersTags = new HashSet<string>();
-        foreach (var groupName in _userRepository.GetUser(userEmail).Groups)
+        var groups = _userRepository.GetUser(userEmail)?.Groups;
+        Console.WriteLine(JsonConvert.SerializeObject(_userRepository.GetUser(userEmail)));
+        groups ??= new List<string>();
+        foreach (var groupName in groups)
         {
-            usersTags.UnionWith(_groupRepository.GetGroup(userEmail, groupName).LinksTags);
+            Console.WriteLine(groupName);
+            var groupTags = GetGroup(groupName, userEmail).LinksTags;
+            usersTags.AddRange(groupTags);
         }
         return usersTags;
     }
@@ -289,6 +307,19 @@ public class JeebkaService
     public List<Link> GetLinksByUrl(string group, string url)
     {
         return _linkRepository.GetLinksByUrl(group, url).Result;
+    }
+
+    public void UpdateLink(string linkId, Link updatedLink)
+    {
+        var oldLink = _linkRepository.GetLink(linkId);
+        if (oldLink==null) return;
+        if (!oldLink.Groups.Any(groupId => _linkRepository.ValidateLinkInGroup(updatedLink.Name, DateTime.Now.ToString(), groupId)))
+        {
+            oldLink.Name = updatedLink.Name;
+            oldLink.Tags = updatedLink.Tags;
+            _linkRepository.UpdateLink(linkId, oldLink);
+        }
+        
     }
 
     public bool Login(UserDto user)

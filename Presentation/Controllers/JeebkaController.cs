@@ -105,12 +105,6 @@ public class JeebkaController : ControllerBase
         
         return Ok(groups);
     }
-    
-    [HttpGet("users/{email}/publics")]
-    public IActionResult ShowPublicGroups(string email)
-    {
-        return Ok(_jeebkaService.GetMostMatchingPublicGroupsByTags(email));
-    }
 
     [HttpPost("users/{email}/groups/{name}/links")]
     public IActionResult CreateLink(LinkDto link, string email, string name)
@@ -209,6 +203,13 @@ public class JeebkaController : ControllerBase
         });
     }
 
+    [HttpPut]
+    public IActionResult UpdateLink(string email, string group, string url)
+    {
+        
+        return Ok();
+    }
+    
     [HttpGet("wave")]
     public IActionResult Wave()
     {
