@@ -153,7 +153,15 @@ public class JeebkaController : ControllerBase
     [HttpGet("users/{email}/query/matchingPublicGroups")]
     public IActionResult GetMostMatchingPublicGroupsByTags(string email)
     {
-        return Ok(_jeebkaService.GetMostMatchingPublicGroupsByTags(email));
+        try
+        {
+            return Ok(_jeebkaService.GetMostMatchingPublicGroupsByTags(email));
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
+        
     }
     
     [HttpGet("users/{email}/query/tags")]
