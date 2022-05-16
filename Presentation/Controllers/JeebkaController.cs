@@ -2,6 +2,7 @@
 using Domain.DTOs;
 using Helper.JWT;
 using Microsoft.AspNetCore.Mvc;
+using Presentation.Request;
 
 namespace Presentation.Controllers;
 
@@ -209,10 +210,10 @@ public class JeebkaController : ControllerBase
         });
     }
 
-    [HttpPut]
-    public IActionResult UpdateLink(string email, string group, string url)
+    [HttpPut("users/{email}/groups/{groupName}/links/{linkUrl}")]
+    public IActionResult UpdateLink(string email, string groupName, string linkUrl, LinkUpdateRequest request)
     {
-        
+        _jeebkaService.UpdateLink(email, groupName, linkUrl, request);
         return Ok();
     }
 }

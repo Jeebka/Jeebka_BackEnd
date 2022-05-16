@@ -307,15 +307,16 @@ public class JeebkaService
         return _linkRepository.GetLinksByUrl(group, url).Result;
     }
 
-    public void UpdateLink(string linkId, Link updatedLink)
+    public void UpdateLink(string email, string groupName, string url, Link updatedLink)
     {
-        var oldLink = _linkRepository.GetLink(linkId);
+        var group = _groupRepository.GetGroup(email, groupName);
+        var oldLink = _linkRepository.GetLinkByUrl(url, group.Id);
         if (oldLink==null) return;
         if (!oldLink.Groups.Any(groupId => _linkRepository.ValidateLinkInGroup(updatedLink.Name, DateTime.Now.ToString(), groupId)))
         {
             oldLink.Name = updatedLink.Name;
             oldLink.Tags = updatedLink.Tags;
-            _linkRepository.UpdateLink(linkId, oldLink);
+            _linkRepository.UpdateLink(oldLink.Id, oldLink);
         }
         
     }
