@@ -367,7 +367,7 @@ public class Tests
         _jeebkaService.AddTagToLink(user2.Email, user2Group2.Name, user2Link2.Name, "TagPrueba2");
         var tagsToMatch = _jeebkaService.GetUsersTags(user1.Email);
         var groupsMatch = _jeebkaService.GetMostMatchingPublicGroupsByTags(user1.Email);
-        foreach (var group in groupsMatch.Keys)
+        foreach (var group in groupsMatch)
         {
             Assert.True(group.Public);
             Assert.True(tagsToMatch.Intersect(group.LinksTags.ToList()).Any());
