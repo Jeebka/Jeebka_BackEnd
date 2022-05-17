@@ -175,7 +175,6 @@ public class JeebkaController : ControllerBase
     public IActionResult GetLinksByTags(string email, string group, List<string> tags)
     {
         var groupId = _jeebkaService.GetGroup(group, email)?.Id;
-        Console.WriteLine(groupId);
         return groupId != null ? Ok(_jeebkaService.GetLinksByTags(groupId, tags)) : NotFound();
     }
 

@@ -295,9 +295,7 @@ public class JeebkaService
     public void UpdateLink(string email, string groupName, string name, Link updatedLink)
     {
         var group = _groupRepository.GetGroup(email, groupName);
-        Console.WriteLine(group.Id);
         var oldLink = _linkRepository.GetLinkByName(name, group.Id);
-        Console.WriteLine(JsonConvert.SerializeObject(oldLink));
         if (oldLink == null) return;
         if (!oldLink.Groups.Any(groupId => _linkRepository.ValidateLinkInGroup(updatedLink.Name, DateTime.Now.ToString(), groupId)))
         {

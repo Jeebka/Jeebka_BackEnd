@@ -58,7 +58,6 @@ public class LinkRepository
     
     public Link? GetLinkByName(string name, string groupId)
     {
-        Console.WriteLine($"{name} {groupId}");
         var findByNameOrUrl = Builders<Link>.Filter.Eq("Name", name);
         return GetLink(findByNameOrUrl);
     }
