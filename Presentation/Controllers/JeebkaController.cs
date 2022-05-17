@@ -171,7 +171,7 @@ public class JeebkaController : ControllerBase
         return Ok(_jeebkaService.GetUsersTags(email));
     }
     
-    [HttpPost("users/{email}/query/group/{group}/tag/")]
+    [HttpPost("users/{email}/query/group/{group}/tag")]
     public IActionResult GetLinksByTags(string email, string group, List<string> tags)
     {
         var groupId = _jeebkaService.GetGroup(group, email)?.Id;

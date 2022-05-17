@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Business.Services;
 using Domain.DTOs;
@@ -274,70 +275,7 @@ public class Tests
         _jeebkaService.AddTagToLink(user.Email, group.Name, link.Name,"tag1"); _jeebkaService.AddTagToLink(user.Email, group.Name, link2.Name,"tag1");
         _jeebkaService.AddTagToLink(user.Email, group.Name, link.Name,"tag2");
         _jeebkaService.AddTagToLink(user.Email, group2.Name, link.Name,"tag2");
-        var userLinks = _jeebkaService.GetLinksByTags(groupId, "tag1");
-        Assert.True(userLinks.Count == 2);
-        Assert.True(userLinks[0].Name == link.Name || userLinks[0].Name == link2.Name);
-        Assert.True(userLinks[1].Name == link.Name || userLinks[1].Name == link2.Name);
-    }
-    
-    [Test]
-    public void ShouldGetTheUsersLinksByName()
-    {
-        var link = CreateGenericLink();
-        var link2 = CreateGenericLink(2);
-        var group = CreateGenericGroup();
-        var group2 = CreateGenericGroup(2);
-        var user = CreateGenericUser();
-        _jeebkaService.CreateUser(user);
-        _jeebkaService.CreateGroup(group, user.Email);
-        _jeebkaService.CreateGroup(group2, user.Email);
-        var groupId = _jeebkaService.GetGroup(group.Name, user.Email).Id;
-        var groupId2 = _jeebkaService.GetGroup(group2.Name, user.Email).Id;
-        _jeebkaService.CreateLink(link, user.Email, group.Name); _jeebkaService.CreateLink(link2, user.Email, group.Name);
-        var link3 = CreateGenericLink(3); link3.Name = "asdas";
-        _jeebkaService.CreateLink(link, user.Email, group2.Name);_jeebkaService.CreateLink(link3, user.Email, group.Name);
-        var userLinks = _jeebkaService.GetLinksByName(groupId, "LinkName");
-        Assert.True(userLinks.Count == 2);
-    }
-    
-    [Test]
-    public void ShouldGetTheUsersLinksByDateRange()
-    {
-        var link = CreateGenericLink();
-        var link2 = CreateGenericLink(2);
-        var group = CreateGenericGroup();
-        var group2 = CreateGenericGroup(2);
-        var user = CreateGenericUser();
-        _jeebkaService.CreateUser(user);
-        _jeebkaService.CreateGroup(group, user.Email);
-        _jeebkaService.CreateGroup(group2, user.Email);
-        var groupId = _jeebkaService.GetGroup(group.Name, user.Email).Id;
-        var groupId2 = _jeebkaService.GetGroup(group2.Name, user.Email).Id;
-        _jeebkaService.CreateLink(link, user.Email, group.Name); _jeebkaService.CreateLink(link2, user.Email, group.Name);
-        _jeebkaService.CreateLink(link, user.Email, group2.Name);
-        var shouldBeEmpty = _jeebkaService.GetLinksByDateRange(groupId, new DateTime(2001,2,15), new DateTime(2002,2,15));
-        var shouldNotBeEmpty = _jeebkaService.GetLinksByDateRange(groupId, DateTime.Today, new DateTime(2002,2,15));
-        Assert.True(shouldBeEmpty.Count == 0);
-        Assert.True(shouldNotBeEmpty.Count == 2);
-    }
-    
-    [Test]
-    public void ShouldGetTheUsersLinksByUrl()
-    {
-        var link = CreateGenericLink();
-        var link2 = CreateGenericLink(2);
-        var group = CreateGenericGroup();
-        var group2 = CreateGenericGroup(2);
-        var user = CreateGenericUser();
-        _jeebkaService.CreateUser(user);
-        _jeebkaService.CreateGroup(group, user.Email);
-        _jeebkaService.CreateGroup(group2, user.Email);
-        var groupId = _jeebkaService.GetGroup(group.Name, user.Email).Id;
-        var groupId2 = _jeebkaService.GetGroup(group2.Name, user.Email).Id;
-        _jeebkaService.CreateLink(link, user.Email, group.Name); _jeebkaService.CreateLink(link2, user.Email, group.Name);
-        _jeebkaService.CreateLink(link, user.Email, group2.Name);
-        var userLinks = _jeebkaService.GetLinksByUrl(groupId, "LinkTest");
-        TestContext.Out.WriteLine(userLinks.Count);
+        var userLinks = _jeebkaService.GetLinksByTags(groupId, new List<string>{"tag1"});
         Assert.True(userLinks.Count == 2);
         Assert.True(userLinks[0].Name == link.Name || userLinks[0].Name == link2.Name);
         Assert.True(userLinks[1].Name == link.Name || userLinks[1].Name == link2.Name);
