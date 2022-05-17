@@ -101,10 +101,12 @@ public class LinkRepository
     
     public List<Link> GetLinksByTags(string group, List<string> tags)
     {
-        var links = new List<Link>();
-        var findByGroupsAndTags = Builders<Link>.Filter.AnyEq("groups", group) & Builders<Link>.Filter.AnyEq("tags", tags);
-        links.AddRange(_collection.Find(findByGroupsAndTags).ToList());
-
-        return links;
+        var findByGroupsAndTags = Builders<Link>.Filter.AnyEq("groups", group);
+        foreach (var tag in tags)
+        {
+            findByGroupsAndTags &= Builders<Link>.Filter.AnyEq("tags", tag);        
+        }
+        return _collection.Find(findByGroupsAndTags).ToList();
+        
     }
 }
