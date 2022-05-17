@@ -199,4 +199,10 @@ public class JeebkaController : ControllerBase
         _jeebkaService.UpdateLink(email, groupName, linkName, request);
         return Ok(_jeebkaService.GetAllLinks());
     }
+
+    [HttpGet]
+    public IActionResult GetAllLinks()
+    {
+        return Ok(_jeebkaService.GetAllLinks());
+    }
 }
