@@ -171,29 +171,12 @@ public class JeebkaController : ControllerBase
         return Ok(_jeebkaService.GetUsersTags(email));
     }
     
-    [HttpGet("users/{email}/query/group/{group}/tag/{tag}")]
-    public IActionResult GetLinksByTags(string email, string group, string tag)
+    [HttpPost("users/{email}/query/group/{group}/tag/")]
+    public IActionResult GetLinksByTags(string email, string group, List<string> tags)
     {
-        //
-        return Ok(_jeebkaService.GetLinksByTags(group, tag));
-    }
-    
-    [HttpGet("users/{email}/query/group/{group}/dates/{lowerBound}/{upperBound}")]
-    public IActionResult GetLinksByDateRange(string email, string group, DateTime upperBound, DateTime lowerBound)
-    {
-        return Ok(_jeebkaService.GetLinksByDateRange(group, upperBound, lowerBound));
-    }
-    
-    [HttpGet("users/{email}/query/group/{group}/name/{name}")]
-    public IActionResult GetLinksByName(string email, string group, string name)
-    {
-        return Ok(_jeebkaService.GetLinksByName(group, name));
-    }
-    
-    [HttpGet("users/{email}/query/group/{group}/url/{url}")]
-    public IActionResult GetLinksByUrl(string email, string group, string url)
-    {
-        return Ok(_jeebkaService.GetLinksByUrl(group, url));
+        var groupId = _jeebkaService.GetGroup(group, email)?.Id;
+        Console.WriteLine(groupId);
+        return groupId != null ? Ok(_jeebkaService.GetLinksByTags(groupId, tags)) : NotFound();
     }
 
     [HttpPost("login")]
@@ -210,10 +193,10 @@ public class JeebkaController : ControllerBase
         });
     }
 
-    [HttpPut("users/{email}/groups/{groupName}/links/{linkUrl}")]
-    public IActionResult UpdateLink(string email, string groupName, string linkUrl, LinkUpdateRequest request)
+    [HttpPut("users/{email}/groups/{groupName}/links/{linkName}/update")]
+    public IActionResult UpdateLink(string email, string groupName, string linkName, LinkUpdateRequest request)
     {
-        _jeebkaService.UpdateLink(email, groupName, linkUrl, request);
-        return Ok();
+        _jeebkaService.UpdateLink(email, groupName, linkName, request);
+        return Ok(_jeebkaService.GetAllLinks());
     }
 }

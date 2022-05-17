@@ -20,6 +20,11 @@ public class LinkRepository
         _collection.InsertOne(link);
     }
 
+    public List<Link> GetAllLinks()
+    {
+        return _collection.Find(_ => true).ToList();
+    }
+
     public void UpdateLink(string linkId, Link link)
     {
         var findByIdFilter = Builders<Link>.Filter.Eq("Id", linkId);
@@ -53,8 +58,8 @@ public class LinkRepository
     
     public Link? GetLinkByName(string name, string groupId)
     {
-        var findByNameOrUrl = Builders<Link>.Filter.Eq("Name", name) &
-                              Builders<Link>.Filter.AnyEq("Groups", groupId);
+        Console.WriteLine($"{name} {groupId}");
+        var findByNameOrUrl = Builders<Link>.Filter.Eq("Name", name);
         return GetLink(findByNameOrUrl);
     }
     
@@ -95,32 +100,12 @@ public class LinkRepository
 
     //QUERIES
     
-    public async Task<List<Link>> GetLinksByTags(string group, string tag)
+    public List<Link> GetLinksByTags(string group, List<string> tags)
     {
-        var findByGroupsAndTags =
-            Builders<Link>.Filter.AnyEq("tags", tag) & Builders<Link>.Filter.AnyEq("groups", group);
-        return await _collection.Find(findByGroupsAndTags).ToListAsync();
-    }
+        var links = new List<Link>();
+        var findByGroupsAndTags = Builders<Link>.Filter.AnyEq("groups", group) & Builders<Link>.Filter.AnyEq("tags", tags);
+        links.AddRange(_collection.Find(findByGroupsAndTags).ToList());
 
-    public async Task<List<Link>> GetLinksByDateRange(string group, DateTime upperBound, DateTime lowerBound)
-    {
-        var findByGroupsAndDates = Builders<Link>.Filter.AnyEq("groups", group) &
-                                   Builders<Link>.Filter.Gte("date", lowerBound) &
-                                   Builders<Link>.Filter.Lte("date", upperBound);
-        return await _collection.Find(findByGroupsAndDates).ToListAsync();
-    }
-
-    public async Task<List<Link>> GetLinksByName(string group, string name)
-    {
-        var findByGroupsAndName = Builders<Link>.Filter.AnyEq("groups", group) &
-                                   Builders<Link>.Filter.Regex("name", $"(.*)({name})(.*)");
-        return await _collection.Find(findByGroupsAndName).ToListAsync();
-    }
-    
-    public async Task<List<Link>> GetLinksByUrl(string group, string url)
-    {
-        var findByGroupsAndName = Builders<Link>.Filter.AnyEq("groups", group) &
-                                  Builders<Link>.Filter.Regex("url", $"(.*)({url})(.*)");
-        return await _collection.Find(findByGroupsAndName).ToListAsync();
+        return links;
     }
 }

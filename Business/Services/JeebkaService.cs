@@ -287,31 +287,18 @@ public class JeebkaService
         return usersTags;
     }
 
-    public List<Link> GetLinksByTags(string group, string tag)
+    public List<Link> GetLinksByTags(string group, List<string> tags)
     {
-        return _linkRepository.GetLinksByTags(group, tag).Result;
+        return _linkRepository.GetLinksByTags(group, tags);
     }
 
-    public List<Link> GetLinksByDateRange(string group, DateTime upperBound, DateTime lowerBound)
-    {
-        return _linkRepository.GetLinksByDateRange(group, upperBound, lowerBound).Result;
-    }
-
-    public List<Link> GetLinksByName(string group, string name)
-    {
-        return _linkRepository.GetLinksByName(group, name).Result;
-    }
-
-    public List<Link> GetLinksByUrl(string group, string url)
-    {
-        return _linkRepository.GetLinksByUrl(group, url).Result;
-    }
-
-    public void UpdateLink(string email, string groupName, string url, Link updatedLink)
+    public void UpdateLink(string email, string groupName, string name, Link updatedLink)
     {
         var group = _groupRepository.GetGroup(email, groupName);
-        var oldLink = _linkRepository.GetLinkByUrl(url, group.Id);
-        if (oldLink==null) return;
+        Console.WriteLine(group.Id);
+        var oldLink = _linkRepository.GetLinkByName(name, group.Id);
+        Console.WriteLine(JsonConvert.SerializeObject(oldLink));
+        if (oldLink == null) return;
         if (!oldLink.Groups.Any(groupId => _linkRepository.ValidateLinkInGroup(updatedLink.Name, DateTime.Now.ToString(), groupId)))
         {
             oldLink.Name = updatedLink.Name;
@@ -330,5 +317,10 @@ public class JeebkaService
         string hash = hashAndSalt[0], salt = hashAndSalt[1];
         loged = HashHelper.CheckHash(user.Password, hash, salt);
         return loged;
+    }
+
+    public List<Link> GetAllLinks()
+    {
+        return _linkRepository.GetAllLinks();
     }
 }
