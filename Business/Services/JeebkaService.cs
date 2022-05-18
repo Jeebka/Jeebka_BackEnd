@@ -188,6 +188,7 @@ public class JeebkaService
         var notExists = _linkRepository.ValidateLinkInGroup(link.Name, link.Url, group.Id);
         if (notExists)
         {
+            link.Tags = link.Tags.Select(tag => tag.ToLower()).ToList();
             _linkRepository.CreateLink(link, out var linkId);
             _groupRepository.AddLinkToGroup(group.Id, linkId);
             _linkRepository.AddGroupToLink(group.Id, linkId);
@@ -243,6 +244,7 @@ public class JeebkaService
 
     public bool AddTagToLink(string userEmail, string groupName, string linkName, string tagName)
     {
+        tagName = tagName.ToLower();
         var group = _groupRepository.GetGroup(userEmail, groupName);
         var link = _linkRepository.GetLinkByName(linkName, group.Id);
         var notExists = false;
