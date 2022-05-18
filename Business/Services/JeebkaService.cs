@@ -108,7 +108,6 @@ public class JeebkaService
     public void DeleteGroup(string userEmail, string groupName)
     {
         var group = _groupRepository.GetGroup(userEmail, groupName);
-        Console.WriteLine($"\n\nGroup: {group} \n\n{group?.Id}\n\n");
         foreach (var linkId in group.Links)
         {
             _linkRepository.DeleteLink(linkId);
@@ -287,8 +286,8 @@ public class JeebkaService
         groups ??= new List<string>();
         foreach (var groupName in groups)
         {
-            var groupTags = GetGroup(groupName, userEmail).LinksTags;
-            usersTags.AddRange(groupTags);
+            var groupTags = GetGroup(groupName, userEmail)?.LinksTags;
+            if(groupTags != null) usersTags.AddRange(groupTags);
         }
         return usersTags;
     }
@@ -305,7 +304,6 @@ public class JeebkaService
         if (oldLink == null) return;
         if (!_linkRepository.ValidateLinkInGroup(updatedLink.Name, DateTime.Now.ToString(), group.Id))
         {
-            Console.WriteLine(oldLink);
             oldLink.Name = updatedLink.Name;
             oldLink.Tags = updatedLink.Tags;
             _linkRepository.UpdateLink(oldLink.Id, oldLink);

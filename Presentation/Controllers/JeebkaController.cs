@@ -155,15 +155,7 @@ public class JeebkaController : ControllerBase
     [HttpGet("users/{email}/query/matchingPublicGroups")]
     public IActionResult GetMostMatchingPublicGroupsByTags(string email)
     {
-        try
-        {
-            return Ok(_jeebkaService.GetMostMatchingPublicGroupsByTags(email));
-        }
-        catch (Exception e)
-        {
-            return BadRequest(e.Message);
-        }
-        
+        return Ok(_jeebkaService.GetMostMatchingPublicGroupsByTags(email));
     }
     
     [HttpGet("users/{email}/query/tags")]
@@ -197,12 +189,6 @@ public class JeebkaController : ControllerBase
     public IActionResult UpdateLink(string email, string groupName, string linkName, LinkUpdateRequest request)
     {
         _jeebkaService.UpdateLink(email, groupName, linkName, request);
-        return Ok(_jeebkaService.GetAllLinks());
-    }
-
-    [HttpGet]
-    public IActionResult GetAllLinks()
-    {
         return Ok(_jeebkaService.GetAllLinks());
     }
 }
